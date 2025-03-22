@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "prepare": "husky"
   },
   "dependencies": {
     "@emotion/cache": "11.14.0",
@@ -26,6 +28,7 @@
     "eslint": "9",
     "eslint-config-next": "15.2.3",
     "eslint-config-prettier": "10.1.1",
+    "husky": "^9.1.7",
     "typescript": "5"
   }
 }
