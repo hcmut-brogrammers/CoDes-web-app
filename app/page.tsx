@@ -1,13 +1,9 @@
-import Button from '@mui/material/Button';
-
-import styles from './page.module.css';
+import Box from '@mui/material/Box';
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Button>Hello</Button>
-      </main>
-    </div>
+    <Box>
+      <Box component="main"></Box>
+    </Box>
   );
 }
