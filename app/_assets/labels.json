@@ -1,23 +1,40 @@
 {
     "Forms": {
         "SignIn": "Sign In Form",
-        "SignUp": "Sign Up Form"
+        "SignUp": "Sign Up Form",
+        "CreateOrganization": "Create Organization Form"
     },
     "InputFields": {
         "Email": "Email",
         "Password": "Password",
-        "Username": "Username"
+        "ConfirmPassword": "Confirm Password",
+        "Username": "Username",
+        "OrganizationName": "Organization Name",
+        "OrganizationAvatarUrl": "Organization Avatar URL (optional)"
+    },
+    "InputPlaceholder": {
+        "EnterUsername": "Enter your username",
+        "EnterEmail": "Enter your email",
+        "EnterPassword": "Enter your password",
+        "EnterConfirmPassword": "Re-enter your password",
+        "AssignOrganizationName": "Assign an organization name",
+        "AssignOrganizationAvatarUrl": "Assign an organization avatar URL"
     },
     "Actions": {
         "SignIn": "Sign In",
         "SignUp": "Sign Up",
-        "SignOut": "Sign Out"
+        "SignOut": "Sign Out",
+        "Create": "Create",
+        "CreateOrganization": "Create Organization"
     },
     "FieldValidation": {
         "EmailRequired": "Email is required",
         "PasswordRequired": "Password is required",
+        "PasswordMisatch": "Entered passwords do not match",
+        "ConfirmPasswordRequired": "Confirm Password is required",
         "UsernameRequired": "Username is required",
-        "ApiUrlRequired": "API URL is required"
+        "ApiUrlRequired": "API URL is required",
+        "OrganizationNameRequired": "Organization Name is required"
     },
     "Console": {
         "Error": {

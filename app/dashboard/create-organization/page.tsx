@@ -2,10 +2,7 @@
 
 import Box from '@mui/material/Box';
 
-import { Labels } from '@/_assets';
-import RedirectLink from '@/_components/RedirectLink';
-import SignUpForm from '@/_components/SignUpForm';
-import { AppRoutes } from '@/_constants/app-routes';
+import CreateOrganizationForm from '@/_components/CreateOrganizationForm';
 import { useCreateStyles } from '@/_hooks/use-app-style';
 import { FunctionCreateStyles } from '@/_types/style';
 
@@ -13,8 +10,7 @@ export default function Page() {
   const styles = useCreateStyles(createStyles);
   return (
     <Box sx={styles.container}>
-      <SignUpForm />
-      <RedirectLink href={AppRoutes.SignIn} label={Labels.Actions.SignIn} />
+      <CreateOrganizationForm />
     </Box>
   );
 }

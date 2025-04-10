@@ -7,7 +7,6 @@ import {
   GlobalStoreContext,
   initializeGlobalStore,
 } from '@/_stores/global-store';
-import { Nullable } from '@/_types/common';
 
 const GlobalStoreProvider: FC<PropsWithChildren> = ({ children }) => {
   const storeRef = useRef<Nullable<GlobalStoreApi>>(null);

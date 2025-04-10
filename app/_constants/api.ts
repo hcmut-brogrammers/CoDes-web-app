@@ -1,6 +1,7 @@
 export const ApiEndpoint = {
   SignUp: '/authenticate/sign-up',
   SignIn: '/authenticate/authenticate-user',
+  Organizations: '/organizations',
 };
 
 export enum RequestMethod {
@@ -10,4 +11,5 @@ export enum RequestMethod {
 
 export enum RequestHeader {
   ContentType = 'Content-Type',
+  Authorization = 'Authorization',
 }

@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 
 import { AppRoutes } from '@/_constants/app-routes';
 import useGlobalStore from '@/_stores/global-store';
+import apiClient from '@/api-client';
 
 const UnredirectedRoutes: string[] = [AppRoutes.SignUp, AppRoutes.SignIn];
 
@@ -13,8 +14,7 @@ const useVerifyAuth = () => {
   const router = useRouter();
   const { accessToken, refreshTokenId, isHydrated } = useGlobalStore();
 
-  const isAuthenticated =
-    Boolean(accessToken) && Boolean(refreshTokenId) && isHydrated;
+  const isAuthenticated = !!accessToken && !!refreshTokenId && isHydrated;
   const shouldRedirectToSignIn =
     !isAuthenticated && !UnredirectedRoutes.includes(pathname);
   const shouldRedirectToDashboard =
@@ -24,9 +24,17 @@ const useVerifyAuth = () => {
     if (shouldRedirectToSignIn) {
       router.push(AppRoutes.SignIn);
     } else if (shouldRedirectToDashboard) {
-      router.push(AppRoutes.Dashboard);
+      router.push(AppRoutes.Dashboard());
     }
   }, [shouldRedirectToSignIn, shouldRedirectToDashboard, router, pathname]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      console.log('Setting access token and refresh token ID in API client');
+      apiClient.setAccessToken(accessToken);
+      apiClient.setRefreshTokenId(refreshTokenId);
+    }
+  }, [isAuthenticated]);
 };
 
 export default useVerifyAuth;

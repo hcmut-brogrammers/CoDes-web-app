@@ -5,7 +5,6 @@ import { createStore, useStore } from 'zustand';
 import { persist, PersistOptions } from 'zustand/middleware';
 
 import { StoreName } from '@/_constants/store';
-import { Nilable, Nullable, Undefinable } from '@/_types/common';
 
 interface IStateData {
   accessToken: Nullable<string>;

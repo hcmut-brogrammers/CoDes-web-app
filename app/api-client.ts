@@ -2,8 +2,23 @@ import { RequestHeader, RequestMethod } from './_constants/api';
 import { appEnv } from './_constants/app-env';
 
 class ApiClient {
+  private accessToken: Nullable<string> = null;
+  // TODO: to be used for refreshing the access token
+  private refreshTokenId: Nullable<string> = null;
   constructor(private readonly baseUrl: string) {
     this.baseUrl = baseUrl;
+  }
+
+  private _getHeaders() {
+    const headers: Record<string, string> = {
+      [RequestHeader.ContentType]: 'application/json',
+    };
+
+    if (this.accessToken) {
+      headers[RequestHeader.Authorization] = `Bearer ${this.accessToken}`;
+    }
+
+    return headers;
   }
 
   private async _sendRequest<TResponse, TRequest>(
@@ -13,9 +28,7 @@ class ApiClient {
   ): Promise<TResponse> {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method: method as string,
-      headers: {
-        [RequestHeader.ContentType]: 'application/json',
-      },
+      headers: { ...this._getHeaders() },
       body: data ? JSON.stringify(data) : undefined,
     });
     if (!response.ok) {
@@ -24,6 +37,14 @@ class ApiClient {
 
     const jsonResponse = (await response.json()) as TResponse;
     return jsonResponse;
+  }
+
+  public setAccessToken(accessToken: Nullable<string>) {
+    this.accessToken = accessToken;
+  }
+
+  public setRefreshTokenId(refreshTokenId: Nullable<string>) {
+    this.refreshTokenId = refreshTokenId;
   }
 
   async post<TResponse, TRequestBody = unknown>(

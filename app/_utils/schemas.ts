@@ -10,8 +10,16 @@ export const SignInFormSchema = Yup.object({
 export const SignUpFormSchema = SignInFormSchema.concat(
   Yup.object({
     username: Yup.string().required(Labels.FieldValidation.UsernameRequired),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password')], Labels.FieldValidation.PasswordMisatch)
+      .required(Labels.FieldValidation.ConfirmPasswordRequired),
   }),
 );
+
+export const CreateOrganizationFormSchema = Yup.object({
+  name: Yup.string().required(Labels.FieldValidation.OrganizationNameRequired),
+  avatarUrl: Yup.string().optional(),
+});
 
 export const AppEnvSchema = Yup.object({
   ApiUrl: Yup.string().required(Labels.FieldValidation.ApiUrlRequired),
