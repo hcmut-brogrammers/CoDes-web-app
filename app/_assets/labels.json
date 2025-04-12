@@ -1,0 +1,28 @@
+{
+    "Forms": {
+        "SignIn": "Sign In Form",
+        "SignUp": "Sign Up Form"
+    },
+    "InputFields": {
+        "Email": "Email",
+        "Password": "Password",
+        "Username": "Username"
+    },
+    "Actions": {
+        "SignIn": "Sign In",
+        "SignUp": "Sign Up",
+        "SignOut": "Sign Out"
+    },
+    "FieldValidation": {
+        "EmailRequired": "Email is required",
+        "PasswordRequired": "Password is required",
+        "UsernameRequired": "Username is required",
+        "ApiUrlRequired": "API URL is required"
+    },
+    "Console": {
+        "Error": {
+            "SignIn": "Error signing in",
+            "SignUp": "Error signing up"
+        }
+    }
+}
