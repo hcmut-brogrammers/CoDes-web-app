@@ -47,5 +47,5 @@ cp .env.example .env
 Then, edit the `.env` file to include your specific environment variables. For example:
 
 ```bash
-NEXT_PUBLIC_API_URL=https://api.example.com
+VITE_API_BASE_URL=https://api.example.com
 ```
