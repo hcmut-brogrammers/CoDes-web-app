@@ -13,6 +13,11 @@ export const SignUpFormSchema = SignInFormSchema.concat(
   }),
 );
 
+export const CreateOrganizationFormSchema = Yup.object({
+  name: Yup.string().required(Labels.FieldValidation.OrganizationNameRequired),
+  avatarUrl: Yup.string().url().optional(),
+});
+
 export const AppEnvSchema = Yup.object({
   ApiBaseUrl: Yup.string().required(Labels.FieldValidation.ApiUrlRequired),
 });

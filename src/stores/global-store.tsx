@@ -2,38 +2,49 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 import { StoreName } from '@/constants/store';
-import { Nullable } from '@/types/common';
+import { ITokenData } from '@/types/authentication';
+import { UserRole } from '@/types/user';
 
 interface IStateData {
-  accessToken: Nullable<string>;
-  refreshTokenId: Nullable<string>;
+  accessToken: string;
+  refreshTokenId: string;
+  tokenData: ITokenData;
 }
 
 interface IState extends IStateData {
-  setAccessToken: (accessToken: Nullable<string>) => void;
-  setRefreshTokenId: (refreshTokenId: Nullable<string>) => void;
+  setAccessToken: (accessToken: string) => void;
+  setRefreshTokenId: (refreshTokenId: string) => void;
+  setTokenData: (tokenData: ITokenData) => void;
   checkIfIsAuthenticated: () => boolean;
 }
 
 export const initializeGlobalStore = (): IStateData => ({
-  accessToken: null,
-  refreshTokenId: null,
+  accessToken: '',
+  refreshTokenId: '',
+  tokenData: {
+    email: '',
+    exp: 0,
+    role: UserRole.OrganizationAdmin,
+    sub: '',
+    user_id: '',
+    username: '',
+  },
 });
 
-const defaultStateData: IStateData = {
-  accessToken: null,
-  refreshTokenId: null,
-};
+const defaultStateData: IStateData = initializeGlobalStore();
 
 const useGlobalStore = create<IState>()(
   persist(
     (set, get) => ({
       ...defaultStateData,
-      setAccessToken: (accessToken: Nullable<string>) => {
+      setAccessToken: (accessToken) => {
         set(() => ({ accessToken }));
       },
-      setRefreshTokenId: (refreshTokenId: Nullable<string>) => {
+      setRefreshTokenId: (refreshTokenId) => {
         set(() => ({ refreshTokenId }));
+      },
+      setTokenData: (tokenData) => {
+        set(() => ({ tokenData }));
       },
       checkIfIsAuthenticated: () => {
         const { accessToken, refreshTokenId } = get();
@@ -42,9 +53,10 @@ const useGlobalStore = create<IState>()(
     }),
     {
       name: StoreName.GlobalStore,
-      partialize: ({ accessToken, refreshTokenId }) => ({
+      partialize: ({ accessToken, refreshTokenId, tokenData }) => ({
         accessToken,
         refreshTokenId,
+        tokenData,
       }),
     },
   ),
