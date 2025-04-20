@@ -11,7 +11,7 @@ on:
         options:
           - dev
           - staging
-          - prod
+          - production
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
