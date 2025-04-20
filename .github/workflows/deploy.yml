@@ -20,7 +20,9 @@ env:
 
 jobs:
   build_and_deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
