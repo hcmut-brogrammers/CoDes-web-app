@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Build Vite app
+        run: yarn build
+
       - name: Build and deploy
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
