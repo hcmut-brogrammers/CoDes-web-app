@@ -30,3 +30,12 @@ export const signIn = async (params: ISignInParams) => {
     params,
   );
 };
+
+interface IRefreshTokenParams extends ISignInResponse {}
+interface IRefreshTokenResponse extends ISignInResponse {}
+export const refreshToken = async (params: IRefreshTokenParams) => {
+  return await apiClient.post<IRefreshTokenParams, IRefreshTokenResponse>(
+    ApiEndpoint.RefreshToken,
+    params,
+  );
+};
