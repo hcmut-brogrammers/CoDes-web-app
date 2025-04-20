@@ -8,8 +8,8 @@ const useSignOut = () => {
     mutationKey: [MutationKey.SignOut],
     mutationFn: async () => {
       const { setAccessToken, setRefreshTokenId } = useGlobalStore.getState();
-      setAccessToken(null);
-      setRefreshTokenId(null);
+      setAccessToken('');
+      setRefreshTokenId('');
     },
   });
 };

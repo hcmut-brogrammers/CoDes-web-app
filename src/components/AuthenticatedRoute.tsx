@@ -1,18 +1,20 @@
-import { FC, PropsWithChildren } from 'react';
-import { Navigate } from 'react-router-dom';
+import { FC } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
 
 import { AppRoutes } from '@/constants/app-routes';
+import useAutoRefreshToken from '@/hooks/use-auto-refresh-token';
 import useGlobalStore from '@/stores/global-store';
 
-const AuthenticatedRoute: FC<PropsWithChildren> = ({ children }) => {
+const AuthenticatedRoute: FC = () => {
   const { checkIfIsAuthenticated } = useGlobalStore();
+  useAutoRefreshToken();
 
   const isAuthenticated = checkIfIsAuthenticated();
   if (!isAuthenticated) {
-    return <Navigate replace to={AppRoutes.SignIn} />;
+    return <Navigate replace to={AppRoutes.SignIn()} />;
   }
 
-  return children;
+  return <Outlet />;
 };
 
 export default AuthenticatedRoute;
