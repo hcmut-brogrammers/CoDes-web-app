@@ -2,10 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 
 import { QueryKey } from '@/constants/query-client';
 import { fetchOrganizations } from '@/services/organization';
-import useGlobalStore from '@/stores/global-store';
+import useAuthStore from '@/stores/global-store';
 
 const useFetchOrganizations = () => {
-  const { checkIfIsAuthenticated } = useGlobalStore();
+  const { checkIfIsAuthenticated } = useAuthStore();
   return useQuery({
     queryKey: [QueryKey.Organizations],
     queryFn: fetchOrganizations,

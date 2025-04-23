@@ -16,13 +16,13 @@ import OnboardingPage from './pages/OnboardingPage';
 import RootPage from './pages/RootPage';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
-import useGlobalStore from './stores/global-store';
+import useAuthStore from './stores/global-store';
 import SetUpProviders from './providers';
 
 const RedirectedRoutes: string[] = [AppRoutes.SignIn(), AppRoutes.SignUp()];
 
 const App: FC = () => {
-  const { checkIfIsAuthenticated } = useGlobalStore();
+  const { checkIfIsAuthenticated } = useAuthStore();
   const location = useLocation();
   const navigate = useNavigate();
 

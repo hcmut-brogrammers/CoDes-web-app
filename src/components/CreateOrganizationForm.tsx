@@ -13,13 +13,13 @@ import { Labels } from '@/assets';
 import { AppRoutes } from '@/constants/app-routes';
 import { useCreateStyles } from '@/hooks/use-app-style';
 import useCreateOrganization from '@/hooks/use-create-organization';
-import useGlobalStore from '@/stores/global-store';
+import useAuthStore from '@/stores/global-store';
 import { FunctionCreateStyles } from '@/types/style';
 import { makeCreateFirstOrganizationInstruction } from '@/utils/instruction';
 import { CreateOrganizationFormSchema } from '@/utils/schemas';
 
 const CreateOrganizationForm: FC = () => {
-  const { tokenData } = useGlobalStore();
+  const { tokenData } = useAuthStore();
   const styles = useCreateStyles(createStyles);
   const navigate = useNavigate();
   const { mutateAsync: createOrganizationAsync } = useCreateOrganization();

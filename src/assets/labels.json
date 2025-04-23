@@ -40,8 +40,14 @@
         "Error": {
             "SignIn": "Error signing in",
             "SignUp": "Error signing up",
-            "ParseJwtTokenPayload": "Error parsing JWT token payload"
+            "ParseJwtTokenPayload": "Error parsing JWT token payload",
+            "Unauthorized": "Unauthorized"
         }
+    },
+    "Error": {
+        "Unauthorized": "Unauthorized",
+        "HttpError": "HTTP error while sending request: %s",
+        "NetworkError": "Network error while sending request: %s"
     },
     "Instruction": {
         "CreateFirstOrganization": "Let's create your very first organization, %s."

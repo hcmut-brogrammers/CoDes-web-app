@@ -18,7 +18,7 @@ interface IState extends IStateData {
   checkIfIsAuthenticated: () => boolean;
 }
 
-export const initializeGlobalStore = (): IStateData => ({
+export const initializeAuthStore = (): IStateData => ({
   accessToken: '',
   refreshTokenId: '',
   tokenData: {
@@ -31,9 +31,9 @@ export const initializeGlobalStore = (): IStateData => ({
   },
 });
 
-const defaultStateData: IStateData = initializeGlobalStore();
+const defaultStateData: IStateData = initializeAuthStore();
 
-const useGlobalStore = create<IState>()(
+const useAuthStore = create<IState>()(
   persist(
     (set, get) => ({
       ...defaultStateData,
@@ -52,7 +52,7 @@ const useGlobalStore = create<IState>()(
       },
     }),
     {
-      name: StoreName.GlobalStore,
+      name: StoreName.AuthStore,
       partialize: ({ accessToken, refreshTokenId, tokenData }) => ({
         accessToken,
         refreshTokenId,
@@ -62,4 +62,4 @@ const useGlobalStore = create<IState>()(
   ),
 );
 
-export default useGlobalStore;
+export default useAuthStore;

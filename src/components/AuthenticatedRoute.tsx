@@ -2,12 +2,10 @@ import { FC } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 
 import { AppRoutes } from '@/constants/app-routes';
-import useAutoRefreshToken from '@/hooks/use-auto-refresh-token';
-import useGlobalStore from '@/stores/global-store';
+import useAuthStore from '@/stores/global-store';
 
 const AuthenticatedRoute: FC = () => {
-  const { checkIfIsAuthenticated } = useGlobalStore();
-  useAutoRefreshToken();
+  const { checkIfIsAuthenticated } = useAuthStore();
 
   const isAuthenticated = checkIfIsAuthenticated();
   if (!isAuthenticated) {
