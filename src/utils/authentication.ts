@@ -5,6 +5,10 @@ import { ITokenData } from '@/types/authentication';
 import { Nullable } from '@/types/common';
 
 export const parseAuthToken = (token: string): Nullable<ITokenData> => {
+  if (!token.length) {
+    return null;
+  }
+
   try {
     return jwtDecode<ITokenData>(token);
   } catch (err) {

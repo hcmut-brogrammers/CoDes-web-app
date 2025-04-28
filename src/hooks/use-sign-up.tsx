@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Labels } from '@/assets';
 import { MutationKey } from '@/constants/query-client';
 import { signUp } from '@/services/authentication';
-import useGlobalStore from '@/stores/global-store';
+import useAuthStore from '@/stores/global-store';
 import { parseAuthToken } from '@/utils/authentication';
 
 const useSignUp = () => {
@@ -12,7 +12,7 @@ const useSignUp = () => {
     mutationFn: signUp,
     onSuccess: async (data) => {
       const { setAccessToken, setRefreshTokenId, setTokenData } =
-        useGlobalStore.getState();
+        useAuthStore.getState();
       setAccessToken(data.access_token);
       setRefreshTokenId(data.refresh_token_id);
       const parsedTokenData = parseAuthToken(data.access_token);
