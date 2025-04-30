@@ -1,4 +1,5 @@
 import { ChangeEvent, FC } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
@@ -7,18 +8,25 @@ import Typography from '@mui/material/Typography';
 import { useFormik } from 'formik';
 
 import { Labels } from '@/assets';
+import { AppRoute } from '@/constants/app-routes';
 import { useCreateStyles } from '@/hooks/use-app-style';
 import useSignIn from '@/hooks/use-sign-in';
-import { ISignInParams } from '@/services/authentication';
+import { ISignInParams } from '@/services/auth';
+import useGlobalStore from '@/stores/global-store';
 import { FunctionCreateStyles } from '@/types/style';
 import { SignInFormSchema } from '@/utils/schemas';
 
 const SignInForm: FC = () => {
+  const navigate = useNavigate();
   const styles = useCreateStyles(createStyles);
   const { mutateAsync: signInAsync } = useSignIn();
+
   const handleSubmit = async (values: ISignInForm) => {
     await signInAsync(values);
     formik.resetForm({ values: initializeSignInForm() });
+    const { currentOrganizationId } = useGlobalStore.getState();
+    console.log({ currentOrganizationId });
+    navigate(AppRoute.Organization(currentOrganizationId));
   };
   const formik = useFormik({
     initialValues: initializeSignInForm(),

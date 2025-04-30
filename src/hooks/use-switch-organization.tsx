@@ -2,15 +2,27 @@ import { useMutation } from '@tanstack/react-query';
 
 import { Labels } from '@/assets';
 import { MutationKey } from '@/constants/query-client';
-import { signIn } from '@/services/auth';
+import {
+  ISwitchOrganizationParams,
+  switchOrganization,
+} from '@/services/organization';
 import useAuthStore from '@/stores/auth-store';
 import useGlobalStore from '@/stores/global-store';
 import { parseAuthToken } from '@/utils/auth';
 
-const useSignIn = () => {
+const useSwitchOrganization = () => {
   return useMutation({
-    mutationKey: [MutationKey.SignIn],
-    mutationFn: signIn,
+    mutationKey: [MutationKey.SwitchOrganization],
+    mutationFn: async (
+      params: Pick<ISwitchOrganizationParams, 'organization_id'>,
+    ) => {
+      const { accessToken, refreshTokenId } = useAuthStore.getState();
+      return await switchOrganization({
+        ...params,
+        access_token: accessToken,
+        refresh_token_id: refreshTokenId,
+      });
+    },
     onSuccess: async (data) => {
       const { setCurrentOrganizationId } = useGlobalStore.getState();
       const { setAccessToken, setRefreshTokenId, setTokenData } =
@@ -29,4 +41,4 @@ const useSignIn = () => {
   });
 };
 
-export default useSignIn;
+export default useSwitchOrganization;
