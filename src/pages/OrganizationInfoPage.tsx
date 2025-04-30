@@ -7,6 +7,7 @@ import Column from '@/components/ui/Column';
 import UpdateOrganizationForm from '@/components/UpdateOrganizationForm';
 import { useCreateStyles } from '@/hooks/use-app-style';
 import useFetchOrganization from '@/hooks/use-fetch-organization';
+import { OrganizationPageParams } from '@/types/page';
 import { FunctionCreateStyles } from '@/types/style';
 
 const OrganizationInfoPage = () => {

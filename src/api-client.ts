@@ -37,7 +37,7 @@ class ApiClient {
   }
 
   private _checkIfIsRefreshTokenEndpoint(endpoint: string): boolean {
-    return endpoint === ApiEndpoint.RefreshToken;
+    return endpoint === ApiEndpoint.RefreshToken();
   }
 
   private async _refreshToken() {
@@ -52,7 +52,7 @@ class ApiClient {
     const response = await this.post<
       IRefreshTokenResponse,
       IRefreshTokenParams
-    >(ApiEndpoint.RefreshToken, {
+    >(ApiEndpoint.RefreshToken(), {
       access_token: accessToken,
       refresh_token_id: refreshTokenId,
     });

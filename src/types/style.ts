@@ -1,7 +1,5 @@
 import { SxProps, Theme } from '@mui/material';
 
-import { Undefinable } from '.';
-
 export interface IAppTheme extends Theme {}
 
 export type StyleProps = Record<string, SxProps>;
