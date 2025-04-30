@@ -9,7 +9,7 @@ import { useFormik } from 'formik';
 import { Labels } from '@/assets';
 import { useCreateStyles } from '@/hooks/use-app-style';
 import useSignUp from '@/hooks/use-sign-up';
-import { ISignUpParams } from '@/services/authentication';
+import { ISignUpParams } from '@/services/auth';
 import { FunctionCreateStyles } from '@/types/style';
 import { UserRole } from '@/types/user';
 import { SignUpFormSchema } from '@/utils/schemas';

@@ -1,6 +1,6 @@
 import apiClient from '@/api-client';
 import { ApiEndpoint } from '@/constants/api';
-import { IRefreshTokenResponse } from '@/types/authentication';
+import { IRefreshTokenResponse } from '@/types/auth';
 import { UserRole } from '@/types/user';
 
 export interface ISignUpParams {
@@ -12,7 +12,7 @@ export interface ISignUpParams {
 interface ISignUpResponse extends IRefreshTokenResponse {}
 export const signUp = async (params: ISignUpParams) => {
   return await apiClient.post<ISignUpResponse, ISignInParams>(
-    ApiEndpoint.SignUp,
+    ApiEndpoint.SignUp(),
     params,
   );
 };
@@ -24,7 +24,7 @@ export interface ISignInParams {
 interface ISignInResponse extends ISignUpResponse {}
 export const signIn = async (params: ISignInParams) => {
   return await apiClient.post<ISignInResponse, ISignInParams>(
-    ApiEndpoint.SignIn,
+    ApiEndpoint.SignIn(),
     params,
   );
 };

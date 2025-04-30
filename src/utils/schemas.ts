@@ -18,6 +18,8 @@ export const CreateOrganizationFormSchema = Yup.object({
   avatarUrl: Yup.string().url().optional(),
 });
 
+export const UpdateOrganizationFormSchema = CreateOrganizationFormSchema;
+
 export const AppEnvSchema = Yup.object({
   ApiBaseUrl: Yup.string().required(Labels.FieldValidation.ApiUrlRequired),
 });

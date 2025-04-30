@@ -1,7 +1,17 @@
-export const AppRoutes = {
+export const RoutePath = {
   SignIn: () => '/sign-in',
   SignUp: () => '/sign-up',
-  Onboarding: () => '/onboarding',
   Dashboard: () => '/dashboard',
-  CreateOrganization: () => `create-organization`,
+  Organization: () => `${RoutePath.Dashboard()}/organizations/:organizationId`,
+  OrganizationInfo: () => `${RoutePath.Organization()}/info`,
+};
+
+export const AppRoute = {
+  SignIn: () => '/sign-in',
+  SignUp: () => '/sign-up',
+  Dashboard: () => '/dashboard',
+  Organization: (organizationId: string) =>
+    `${AppRoute.Dashboard()}/organizations/${organizationId}`,
+  OrganizationInfo: (organizationId: string) =>
+    `${AppRoute.Organization(organizationId)}/info`,
 };

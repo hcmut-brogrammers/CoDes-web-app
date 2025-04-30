@@ -1,6 +1,6 @@
 import { SxProps, Theme } from '@mui/material';
 
-import { Undefinable } from './common';
+import { Undefinable } from '.';
 
 export interface IAppTheme extends Theme {}
 
