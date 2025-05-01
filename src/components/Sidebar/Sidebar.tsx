@@ -13,7 +13,7 @@ import useGlobalStore from '@/stores/global-store';
 import { FunctionCreateStyles } from '@/types/style';
 
 import Column from '../ui/Column';
-import { ApartmentRoundedIcon } from '../ui/Icons';
+import { ApartmentRoundedIcon, GroupRoundedIcon } from '../ui/Icons';
 
 import OrganizationSelect from './OrganizationSelect';
 import UserAvatar from './UserAvatar';
@@ -25,6 +25,7 @@ const Sidebar: FC = () => {
       <OrganizationSection />
       <Box sx={{ flex: 1 }}></Box>
       <MenuList>
+        <MembersInfo />
         <OrganizationInfo />
       </MenuList>
       <UserSection />
@@ -32,7 +33,7 @@ const Sidebar: FC = () => {
   );
 };
 
-const OrganizationSection = () => {
+const OrganizationSection: FC = () => {
   const styles = useCreateStyles(createStyles);
   return (
     <Column sx={styles.organizationSection}>
@@ -41,12 +42,26 @@ const OrganizationSection = () => {
   );
 };
 
-const UserSection = () => {
+const UserSection: FC = () => {
   const styles = useCreateStyles(createStyles);
   return (
     <Column sx={styles.userAvatarContainer}>
       <UserAvatar />
     </Column>
+  );
+};
+
+const MembersInfo: FC = () => {
+  const { currentOrganizationId } = useGlobalStore();
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(AppRoute.MembersInfo(currentOrganizationId));
+  };
+  return (
+    <StyledMenuItem onClick={handleClick}>
+      <GroupRoundedIcon />
+      <Typography>{Labels.Sidebar.MembersInfo}</Typography>
+    </StyledMenuItem>
   );
 };
 
