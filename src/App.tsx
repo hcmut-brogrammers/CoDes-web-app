@@ -1,4 +1,5 @@
 import { FC, useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
 import {
   BrowserRouter,
   Route,
@@ -10,12 +11,14 @@ import {
 import AuthenticatedRoute from './components/AuthenticatedRoute';
 import { AppRoute, RoutePath } from './constants/app-routes';
 import DashboardPage from './pages/DashboardPage';
+import MembersPage from './pages/MembersPage';
 import OrganizationInfoPage from './pages/OrganizationInfoPage';
 import OrganizationPage from './pages/OrganizationPage';
 import RootPage from './pages/RootPage';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
 import useAuthStore from './stores/auth-store';
+import { toastOptions } from './utils/toast';
 import SetUpProviders from './providers';
 
 import './index.css';
@@ -55,6 +58,7 @@ const App: FC = () => {
             path={RoutePath.OrganizationInfo()}
             element={<OrganizationInfoPage />}
           />
+          <Route path={RoutePath.MembersInfo()} element={<MembersPage />} />
         </Route>
       </Route>
     </Routes>
@@ -66,6 +70,7 @@ const PreloadedApp: FC = () => {
     <BrowserRouter>
       <SetUpProviders>
         <App />
+        <Toaster toastOptions={toastOptions} />
       </SetUpProviders>
     </BrowserRouter>
   );

@@ -7,8 +7,10 @@ export enum MutationKey {
   DeleteOrganization = 'DeleteOrganization',
   RefreshToken = 'RefreshToken',
   SwitchOrganization = 'SwitchOrganization',
+  CreateInvitations = 'CreateInvitations',
 }
 
 export enum QueryKey {
   Organizations = 'Organizations',
+  Users = 'Users',
 }
