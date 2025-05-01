@@ -1,0 +1,13 @@
+/* set box-sizing to all tags using asterisk */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100vh;
+}
+
+body, body > div {
+    margin: 0px;
+    height: 100%;
+}

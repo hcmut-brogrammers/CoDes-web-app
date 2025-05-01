@@ -3,12 +3,9 @@ import { vsprintf } from 'sprintf-js';
 import { ApiEndpoint, RequestHeader, RequestMethod } from './constants/api';
 import { appEnv } from './constants/app-env';
 import { ResponseStatus } from './constants/enum';
-import useAuthStore from './stores/global-store';
-import {
-  IRefreshTokenParams,
-  IRefreshTokenResponse,
-} from './types/authentication';
-import { parseAuthToken } from './utils/authentication';
+import useAuthStore from './stores/auth-store';
+import { IRefreshTokenParams, IRefreshTokenResponse } from './types/auth';
+import { parseAuthToken } from './utils/auth';
 import { Labels } from './assets';
 
 const DefaultMaxRetries = 2;
@@ -40,7 +37,7 @@ class ApiClient {
   }
 
   private _checkIfIsRefreshTokenEndpoint(endpoint: string): boolean {
-    return endpoint === ApiEndpoint.RefreshToken;
+    return endpoint === ApiEndpoint.RefreshToken();
   }
 
   private async _refreshToken() {
@@ -55,7 +52,7 @@ class ApiClient {
     const response = await this.post<
       IRefreshTokenResponse,
       IRefreshTokenParams
-    >(ApiEndpoint.RefreshToken, {
+    >(ApiEndpoint.RefreshToken(), {
       access_token: accessToken,
       refresh_token_id: refreshTokenId,
     });
@@ -179,6 +176,26 @@ class ApiClient {
     return await this._sendRequest<TResponse, TRequestBody>(
       endpoint,
       RequestMethod.GET,
+    );
+  }
+
+  async put<TResponse, TRequestBody = unknown>(
+    endpoint: string,
+    data: TRequestBody,
+  ): Promise<TResponse> {
+    return await this._sendRequest<TResponse, TRequestBody>(
+      endpoint,
+      RequestMethod.PUT,
+      data,
+    );
+  }
+
+  async delete<TResponse, TRequestBody = unknown>(
+    endpoint: string,
+  ): Promise<TResponse> {
+    return await this._sendRequest<TResponse, TRequestBody>(
+      endpoint,
+      RequestMethod.DELETE,
     );
   }
 }

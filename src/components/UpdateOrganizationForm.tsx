@@ -1,40 +1,40 @@
 'use client';
 
 import React, { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import { useFormik } from 'formik';
 
 import { Labels } from '@/assets';
-import { AppRoute } from '@/constants/app-routes';
 import { useCreateStyles } from '@/hooks/use-app-style';
-import useCreateOrganization from '@/hooks/use-create-organization';
+import useUpdateOrganization from '@/hooks/use-update-organization';
+import { IOrganization } from '@/types/organization';
 import { FunctionCreateStyles } from '@/types/style';
-import { CreateOrganizationFormSchema } from '@/utils/schemas';
+import { UpdateOrganizationFormSchema } from '@/utils/schemas';
 
-const CreateOrganizationForm: FC<{ onSubmitSuccess?: () => void }> = ({
-  onSubmitSuccess = () => {},
+import Row from './ui/Row';
+
+const UpdateOrganizationForm: FC<{ organization: IOrganization }> = ({
+  organization,
 }) => {
   const styles = useCreateStyles(createStyles);
-  const navigate = useNavigate();
-  const { mutateAsync: createOrganizationAsync } = useCreateOrganization();
+  const { mutateAsync: updateOrganizationAsync } = useUpdateOrganization();
   const handleSubmit = async (values: IForm) => {
-    await createOrganizationAsync({
-      name: values.name,
-      avatar_url: values.avatarUrl,
+    await updateOrganizationAsync({
+      organizationId: organization.id,
+      updates: values,
     });
-    navigate(AppRoute.Dashboard());
-    onSubmitSuccess();
   };
   const formik = useFormik({
-    initialValues: initializeForm(),
+    initialValues: {
+      name: organization.name,
+      avatarUrl: organization.avatar_url,
+    },
     onSubmit: handleSubmit,
     validateOnMount: true,
-    validationSchema: CreateOrganizationFormSchema,
+    validationSchema: UpdateOrganizationFormSchema,
   });
 
   const { name, avatarUrl } = formik.values;
@@ -51,9 +51,6 @@ const CreateOrganizationForm: FC<{ onSubmitSuccess?: () => void }> = ({
   return (
     <Box component="form" onSubmit={formik.handleSubmit} sx={styles.container}>
       <Stack direction="column" spacing={4}>
-        <Typography variant="h6" sx={{ textAlign: 'center' }}>
-          {Labels.Forms.CreateOrganization}
-        </Typography>
         <TextField
           type="text"
           variant="outlined"
@@ -72,14 +69,16 @@ const CreateOrganizationForm: FC<{ onSubmitSuccess?: () => void }> = ({
           value={avatarUrl}
           onChange={handleChangeField('avatarUrl')}
         />
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={!canSubmit}
-          loading={formik.isSubmitting}
-        >
-          {Labels.Actions.Create}
-        </Button>
+        <Row justifyContent="space-between">
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={!canSubmit}
+            loading={formik.isSubmitting}
+          >
+            {Labels.Actions.Save}
+          </Button>
+        </Row>
       </Stack>
     </Box>
   );
@@ -95,12 +94,7 @@ const createStyles: FunctionCreateStyles = () => {
 
 interface IForm {
   name: string;
-  avatarUrl: string;
+  avatarUrl?: string;
 }
 
-const initializeForm = (): IForm => ({
-  name: '',
-  avatarUrl: '',
-});
-
-export default CreateOrganizationForm;
+export default UpdateOrganizationForm;

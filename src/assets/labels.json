@@ -2,7 +2,8 @@
     "Forms": {
         "SignIn": "Sign In Form",
         "SignUp": "Sign Up Form",
-        "CreateOrganization": "Create Organization Form"
+        "CreateOrganization": "Create Organization",
+        "UpdateOrganization": "Update Organization"
     },
     "InputFields": {
         "Email": "Email",
@@ -25,7 +26,10 @@
         "SignUp": "Sign Up",
         "SignOut": "Sign Out",
         "Create": "Create",
-        "CreateOrganization": "Create Organization"
+        "Save": "Save",
+        "Delete": "Delete",
+        "CreateOrganization": "Create Organization",
+        "Confirm": "Confirm"
     },
     "FieldValidation": {
         "EmailRequired": "Email is required",
@@ -51,5 +55,11 @@
     },
     "Instruction": {
         "CreateFirstOrganization": "Let's create your very first organization, %s."
+    },
+    "Sidebar": {
+        "OrganizationInfo": "Organization Info"
+    },
+    "Modal": {
+        "DeleteOrganization": "Delete Organization"
     }
 }

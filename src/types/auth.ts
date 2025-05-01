@@ -1,6 +1,7 @@
 import { UserRole } from './user';
 
 export interface ITokenData {
+  organization_id: string;
   user_id: string;
   username: string;
   email: string;

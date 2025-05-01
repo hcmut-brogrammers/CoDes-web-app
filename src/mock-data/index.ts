@@ -1,4 +1,4 @@
-import { MockAuthenticationData } from './authentication';
+import { MockAuthenticationData } from './auth';
 import { MockOrganizationData } from './organization';
 
 const MockData = {

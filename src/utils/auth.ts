@@ -1,8 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
 
 import { Labels } from '@/assets';
-import { ITokenData } from '@/types/authentication';
-import { Nullable } from '@/types/common';
+import { ITokenData } from '@/types/auth';
 
 export const parseAuthToken = (token: string): Nullable<ITokenData> => {
   if (!token.length) {
