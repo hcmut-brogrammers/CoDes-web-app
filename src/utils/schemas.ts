@@ -20,6 +20,15 @@ export const CreateOrganizationFormSchema = Yup.object({
 
 export const UpdateOrganizationFormSchema = CreateOrganizationFormSchema;
 
+const MatchedUserSchema = Yup.object({
+  id: Yup.string(),
+  email: Yup.string().email(),
+  username: Yup.string(),
+});
+export const CreateInvitationsFormSchema = Yup.object({
+  users: Yup.array().of(MatchedUserSchema).min(1).required(),
+});
+
 export const AppEnvSchema = Yup.object({
   ApiBaseUrl: Yup.string().required(Labels.FieldValidation.ApiUrlRequired),
 });
