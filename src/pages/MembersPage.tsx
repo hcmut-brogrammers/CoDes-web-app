@@ -137,7 +137,7 @@ const UserAutocomplete: FC<{
 
   useEffect(() => {
     handleFetchMatchedUsers(debouncedSearchQuery);
-  }, [handleFetchMatchedUsers, debouncedSearchQuery]);
+  }, [debouncedSearchQuery]);
 
   return (
     <Autocomplete
