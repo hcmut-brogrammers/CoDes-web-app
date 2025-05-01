@@ -11,7 +11,8 @@
         "Username": "Username",
         "ConfirmPassword": "Confirm Password",
         "OrganizationName": "Organization Name",
-        "OrganizationAvatarUrl": "Organization Avatar URL (optional)"
+        "OrganizationAvatarUrl": "Organization Avatar URL (optional)",
+        "SearchUsers": "Search users"
     },
     "InputPlaceholder": {
         "EnterUsername": "Enter your username",
@@ -28,8 +29,10 @@
         "Create": "Create",
         "Save": "Save",
         "Delete": "Delete",
+        "Confirm": "Confirm",
         "CreateOrganization": "Create Organization",
-        "Confirm": "Confirm"
+        "AddMember": "Add Member",
+        "Send": "Send"
     },
     "FieldValidation": {
         "EmailRequired": "Email is required",
@@ -57,9 +60,22 @@
         "CreateFirstOrganization": "Let's create your very first organization, %s."
     },
     "Sidebar": {
-        "OrganizationInfo": "Organization Info"
+        "OrganizationInfo": "Organization Info",
+        "MembersInfo": "Members"
     },
     "Modal": {
-        "DeleteOrganization": "Delete Organization"
+        "DeleteOrganization": "Delete Organization",
+        "AddMember": "Add Member"
+    },
+    "Loading": {
+        "SearchingUsers": "Searching for users that match \"%s\"..."
+    },
+    "Empty": {
+        "NoResults": "No results found"
+    },
+    "Toast": {
+        "Success": {
+            "CreateInvitations": "Invitations sent to %s."
+        }
     }
 }

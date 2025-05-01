@@ -7,6 +7,8 @@ export const ApiEndpoint = {
     `${ApiEndpoint.Organizations()}/${organizationId}`,
   SwitchOrganization: () =>
     `${ApiEndpoint.Organizations()}/switch-organization`,
+  UsersByEmail: (email: string) => `/users?email=${email}`,
+  Invitations: () => '/join-organization-invitations',
 };
 
 export enum RequestMethod {
