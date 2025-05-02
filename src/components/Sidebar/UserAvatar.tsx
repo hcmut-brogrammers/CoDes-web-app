@@ -14,7 +14,7 @@ import { FunctionCreateStyles } from '@/types/style';
 import Row from '../ui/Row';
 
 const UserAvatar: FC = () => {
-  const { mutate: signOut } = useSignOut();
+  const { mutateAsync: signOutAsync } = useSignOut();
   const styles = useCreateStyles(createStyles);
   const { tokenData } = useAuthStore();
 
@@ -30,8 +30,8 @@ const UserAvatar: FC = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleSignOut = () => {
-    signOut();
+  const handleSignOut = async () => {
+    await signOutAsync();
     handleClose();
   };
 

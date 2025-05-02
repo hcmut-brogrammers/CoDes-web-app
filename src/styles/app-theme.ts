@@ -9,6 +9,13 @@ const theme = createTheme({
     fontFamily: 'var(--font-roboto)',
   },
   components: {
+    MuiTypography: {
+      defaultProps: {
+        sx: {
+          textWrap: 'wrap',
+        },
+      },
+    },
     MuiSkeleton: {
       defaultProps: {
         variant: 'rectangular',

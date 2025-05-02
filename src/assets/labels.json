@@ -32,7 +32,9 @@
         "Confirm": "Confirm",
         "CreateOrganization": "Create Organization",
         "AddMember": "Add Member",
-        "Send": "Send"
+        "Send": "Send",
+        "MarkRead": "Mark as Read",
+        "MarkUnread": "Mark as Unread"
     },
     "FieldValidation": {
         "EmailRequired": "Email is required",
@@ -75,7 +77,9 @@
     },
     "Toast": {
         "Success": {
-            "CreateInvitations": "Invitations sent to %s."
+            "CreateInvitations": "Invitations sent to %s.",
+            "MarkInvitationAsRead": "Marked invitation as read.",
+            "MarkInvitationAsUnread": "Marked invitation as unread."
         }
     }
 }

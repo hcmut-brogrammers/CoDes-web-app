@@ -9,6 +9,7 @@ interface IStateData {
 
 interface IState extends IStateData {
   setCurrentOrganizationId: (currentOrganizationId: string) => void;
+  resetStore: () => void;
 }
 
 const initializeGlobalStore = (): IStateData => ({
@@ -23,6 +24,9 @@ const useGlobalStore = create<IState>()(
       ...defaultStateData,
       setCurrentOrganizationId: (currentOrganizationId) => {
         set(() => ({ currentOrganizationId }));
+      },
+      resetStore: () => {
+        set(() => ({ ...defaultStateData }));
       },
     }),
     {

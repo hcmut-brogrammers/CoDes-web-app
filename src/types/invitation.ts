@@ -17,4 +17,18 @@ export interface IInvitation {
   updated_at: Nilable<string>;
   deleted_at: Nilable<string>;
   is_deleted: boolean;
+  is_read: boolean;
+}
+
+export interface IUserInvitation
+  extends Pick<
+    IInvitation,
+    'id' | 'status' | 'expires_at' | 'created_at' | 'is_read'
+  > {
+  organization: {
+    name: string;
+  };
+  sender: {
+    username: string;
+  };
 }
