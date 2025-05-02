@@ -25,7 +25,6 @@ const SignInForm: FC = () => {
     await signInAsync(values);
     formik.resetForm({ values: initializeSignInForm() });
     const { currentOrganizationId } = useGlobalStore.getState();
-    console.log({ currentOrganizationId });
     navigate(AppRoute.Organization(currentOrganizationId));
   };
   const formik = useFormik({

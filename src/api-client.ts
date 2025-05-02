@@ -161,7 +161,7 @@ class ApiClient {
 
   async post<TResponse, TRequestBody = unknown>(
     endpoint: string,
-    data: TRequestBody,
+    data?: TRequestBody,
   ): Promise<TResponse> {
     return await this._sendRequest<TResponse, TRequestBody>(
       endpoint,
