@@ -34,6 +34,18 @@ const ToastSuccess = {
     const message = Labels.Toast.Success.MarkInvitationAsUnread;
     toast.success(message);
   },
+  JoinOrganization: (organizationName: string) => {
+    const message = vsprintf(Labels.Toast.Success.JoinedOrganization, [
+      organizationName,
+    ]);
+    toast.success(message);
+  },
+  UninviteMember: (memberEmail: string) => {
+    const message = vsprintf(Labels.Toast.Success.UninvitedMember, [
+      memberEmail,
+    ]);
+    toast.success(message);
+  },
 };
 
 export const ToastManager = {

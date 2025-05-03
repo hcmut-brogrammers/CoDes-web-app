@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -8,12 +7,12 @@ import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 
 import { Labels } from '@/assets';
-import { AppRoute } from '@/constants/app-routes';
 import { useCreateStyles } from '@/hooks/use-app-style';
 import useFetchOrganizations from '@/hooks/use-fetch-organizations';
 import useMenu from '@/hooks/use-menu';
 import useModal from '@/hooks/use-modal';
 import useSwitchOrganization from '@/hooks/use-switch-organization';
+import useAuthStore from '@/stores/auth-store';
 import useGlobalStore from '@/stores/global-store';
 import { AppStyleVariable } from '@/styles';
 import { IOrganization } from '@/types/organization';
@@ -30,7 +29,6 @@ import StyledMenu, { StyledMenuItem } from '../ui/StyledMenu';
 import CreateOrganizationModal from './CreateOrganizationModal';
 
 const OrganizationSelect: FC = () => {
-  const navigate = useNavigate();
   const styles = useCreateStyles(createStyles);
   const { currentOrganizationId } = useGlobalStore();
   const { data: organizationsData, isFetched: isOrganizationsDataFetched } =
@@ -44,9 +42,8 @@ const OrganizationSelect: FC = () => {
   } = useModal();
   const { anchorEl, handleOpenMenu, handleCloseMenu, menuOpen } = useMenu();
   const handleChangeOrganization = async (organizationId: string) => {
-    await switchOrganizationAsync({ organization_id: organizationId });
     handleCloseMenu();
-    navigate(AppRoute.Organization(organizationId));
+    await switchOrganizationAsync({ organization_id: organizationId });
   };
 
   if (!organizationsData || !isOrganizationsDataFetched) {
@@ -107,10 +104,15 @@ const OrganizationMenuItem: FC<
     onClick: (organizationId: string) => void;
   }
 > = ({ organization, isSelected, onClick, ...props }) => {
+  const { tokenData } = useAuthStore();
   const styles = useCreateStyles(createStyles);
+
+  const isInvited = tokenData?.user_id !== organization.owner_id;
   const firstLetter = organization.name.charAt(0).toUpperCase();
   const isDefault = organization.is_default;
-  const label = isDefault
+  const label = isInvited
+    ? `${organization.name} (Invited)`
+    : isDefault
     ? `${organization.name} (Default)`
     : organization.name;
 

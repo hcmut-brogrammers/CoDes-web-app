@@ -7,14 +7,17 @@ import Typography from '@mui/material/Typography';
 import { parseISO } from 'date-fns';
 
 import { Labels } from '@/assets';
+import { InvitationStatus, InviteeAction } from '@/constants/enum';
 import useFetchUserInvitations from '@/hooks/use-fetch-user-invitations';
 import useMarkInvitationAsRead from '@/hooks/use-mark-invitation-read';
 import useMarkInvitationAsUnread from '@/hooks/use-mark-invitation-unread';
 import useMenu from '@/hooks/use-menu';
+import useTakeInvitationAction from '@/hooks/use-take-invitation-action';
 import { IUserInvitation } from '@/types/invitation';
 
 import Column from '../ui/Column';
 import { NotificationsRoundedIcon } from '../ui/Icons';
+import Row from '../ui/Row';
 import StyledMenu, { StyledMenuItem, StyledMenuProps } from '../ui/StyledMenu';
 
 const InvitationNotiMenu: FC = () => {
@@ -86,8 +89,11 @@ const UserInvitation: FC<{ userInvitation: IUserInvitation }> = ({
   const content = `${userInvitation.sender.username} invited you to join ${
     userInvitation.organization.name
   } organization on ${parseISO(userInvitation.created_at).toLocaleString()}`;
-  const showMarkReadButton = !userInvitation.is_read;
-  const showMarkUnreadButton = !showMarkReadButton;
+  const shouldShowButtons = userInvitation.status === InvitationStatus.Pending;
+  const showMarkReadButton = shouldShowButtons && !userInvitation.is_read;
+  const showMarkUnreadButton = shouldShowButtons && userInvitation.is_read;
+  const isAccepted = userInvitation.status === InvitationStatus.Accepted;
+  const isRejected = userInvitation.status === InvitationStatus.Rejected;
 
   return (
     <StyledMenuItem>
@@ -95,14 +101,84 @@ const UserInvitation: FC<{ userInvitation: IUserInvitation }> = ({
         <Box>
           <Typography>{content}</Typography>
         </Box>
-        {showMarkReadButton && (
-          <MarkReadButton invitationId={userInvitation.id} />
-        )}
-        {showMarkUnreadButton && (
-          <MarkUnreadButton invitationId={userInvitation.id} />
-        )}
+        <Row gap={4} sx={{ justifyContent: 'flex-end' }}>
+          {showMarkReadButton && (
+            <MarkReadButton invitationId={userInvitation.id} />
+          )}
+          {showMarkUnreadButton && (
+            <MarkUnreadButton invitationId={userInvitation.id} />
+          )}
+          {shouldShowButtons && (
+            <>
+              <AcceptInvitationButton
+                invitationId={userInvitation.id}
+                organizationName={userInvitation.organization.name}
+              />
+              <RejectInvitationButton
+                invitationId={userInvitation.id}
+                organizationName={userInvitation.organization.name}
+              />
+            </>
+          )}
+        </Row>
+        <Row gap={4} sx={{ justifyContent: 'flex-end' }}>
+          {isAccepted && (
+            <Typography color="primary">
+              {Labels.InvitationStatus.Accepted}
+            </Typography>
+          )}
+          {isRejected && (
+            <Typography color="error">
+              {Labels.InvitationStatus.Rejected}
+            </Typography>
+          )}
+        </Row>
       </Column>
     </StyledMenuItem>
+  );
+};
+
+const AcceptInvitationButton: FC<{
+  invitationId: string;
+  organizationName: string;
+}> = ({ invitationId, organizationName }) => {
+  const { mutateAsync: takeInvitationAsync, isPending } =
+    useTakeInvitationAction();
+
+  const handleClick = async () => {
+    await takeInvitationAsync({
+      invitation_id: invitationId,
+      action: InviteeAction.Accept,
+      organization_name: organizationName,
+    });
+  };
+
+  return (
+    <Button color="success" loading={isPending} onClick={handleClick}>
+      {Labels.Actions.Accept}
+    </Button>
+  );
+};
+
+const RejectInvitationButton: FC<{
+  invitationId: string;
+  organizationName: string;
+}> = ({ invitationId, organizationName }) => {
+  const { mutateAsync: takeInvitationAsync, isPending } =
+    useTakeInvitationAction();
+
+  const handleClick = async () => {
+    await takeInvitationAsync({
+      invitation_id: invitationId,
+      action: InviteeAction.Reject,
+      organization_name: organizationName,
+    });
+  };
+
+  return (
+    <Button color="error" loading={isPending} onClick={handleClick}>
+      {Labels.Actions.Reject}
+    </Button>
   );
 };
 
@@ -111,7 +187,7 @@ const MarkReadButton: FC<{ invitationId: string }> = ({ invitationId }) => {
     useMarkInvitationAsRead();
 
   const handleClick = async () => {
-    await markInvitationAsReadAsync({ invitationId });
+    await markInvitationAsReadAsync({ invitation_id: invitationId });
   };
 
   return (
@@ -126,7 +202,7 @@ const MarkUnreadButton: FC<{ invitationId: string }> = ({ invitationId }) => {
     useMarkInvitationAsUnread();
 
   const handleClick = async () => {
-    await markInvitationAsUnreadAsync({ invitationId });
+    await markInvitationAsUnreadAsync({ invitation_id: invitationId });
   };
 
   return (
