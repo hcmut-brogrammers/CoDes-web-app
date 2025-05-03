@@ -8,12 +8,15 @@ export enum MutationKey {
   RefreshToken = 'RefreshToken',
   SwitchOrganization = 'SwitchOrganization',
   CreateInvitations = 'CreateInvitations',
+  TakeInvitationAction = 'TakeInvitationAction',
+  UninviteMember = 'UninviteMember',
   MarkInvitationAsRead = 'MarkInvitationAsRead',
   MarkInvitationAsUnread = 'MarkInvitationAsUnread',
 }
 
 export enum QueryKey {
   Organizations = 'Organizations',
+  OrganizationMembers = 'OrganizationMembers',
   Users = 'Users',
   UserInvitations = 'UserInvitations',
 }

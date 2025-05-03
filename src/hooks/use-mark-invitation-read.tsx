@@ -2,25 +2,27 @@ import { useMutation } from '@tanstack/react-query';
 
 import { MutationKey } from '@/constants/query-client';
 import { QueryData } from '@/query-data';
-import { markUserInvitationAsRead } from '@/services/invitation';
-import { ToastManager } from '@/utils/toast';
+import {
+  IMarkUserInvitationAsReadParams,
+  markUserInvitationAsRead,
+} from '@/services/invitation';
+
+interface IVariables extends IMarkUserInvitationAsReadParams {}
 
 const useMarkInvitationAsRead = () => {
   return useMutation({
     mutationKey: [MutationKey.MarkInvitationAsRead],
-    mutationFn: async ({ invitationId }: { invitationId: string }) => {
-      const response = await markUserInvitationAsRead({
-        invitation_id: invitationId,
+    mutationFn: async ({ invitation_id }: IVariables) => {
+      return await markUserInvitationAsRead({
+        invitation_id,
       });
-      return response.success;
     },
-    onSuccess: (data, { invitationId }) => {
-      if (data) {
-        QueryData.updateUserInvitation(invitationId, (invitation) => ({
+    onSuccess: (data, { invitation_id }) => {
+      if (data.success) {
+        QueryData.updateUserInvitation(invitation_id, (invitation) => ({
           ...invitation,
           is_read: true,
         }));
-        ToastManager.Success.MarkInvitationAsRead();
       }
     },
   });

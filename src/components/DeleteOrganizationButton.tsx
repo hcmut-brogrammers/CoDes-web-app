@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -8,7 +7,6 @@ import { useFormik } from 'formik';
 import { Labels } from '@/assets';
 import Column from '@/components/ui/Column';
 import Modal, { ModalProps } from '@/components/ui/Modal';
-import { AppRoute } from '@/constants/app-routes';
 import useDeleteOrganization from '@/hooks/use-delete-organization';
 import useModal from '@/hooks/use-modal';
 import useSwitchOrganization from '@/hooks/use-switch-organization';
@@ -41,15 +39,13 @@ const DeleteOrganizationModal: FC<
     organization: IOrganization;
   }
 > = ({ organization, open, onClose }) => {
-  const navigate = useNavigate();
   const { mutateAsync: switchOrganizationAsync } = useSwitchOrganization();
   const { mutateAsync: deleteOrganizationAsync } = useDeleteOrganization();
   const handleSubmit = async () => {
     await deleteOrganizationAsync({ organizationId: organization.id });
     const { currentOrganizationId } = useGlobalStore.getState();
-    await switchOrganizationAsync({ organization_id: currentOrganizationId });
     onClose();
-    navigate(AppRoute.Organization(currentOrganizationId));
+    await switchOrganizationAsync({ organization_id: currentOrganizationId });
   };
   const formik = useFormik({
     initialValues: { organizationName: '' },

@@ -34,7 +34,10 @@
         "AddMember": "Add Member",
         "Send": "Send",
         "MarkRead": "Mark as Read",
-        "MarkUnread": "Mark as Unread"
+        "MarkUnread": "Mark as Unread",
+        "Accept": "Accept",
+        "Reject": "Reject",
+        "Uninvite": "Uninvite"
     },
     "FieldValidation": {
         "EmailRequired": "Email is required",
@@ -79,7 +82,13 @@
         "Success": {
             "CreateInvitations": "Invitations sent to %s.",
             "MarkInvitationAsRead": "Marked invitation as read.",
-            "MarkInvitationAsUnread": "Marked invitation as unread."
+            "MarkInvitationAsUnread": "Marked invitation as unread.",
+            "JoinedOrganization": "Joined organization %s.",
+            "UninvitedMember": "Uninvited member %s."
         }
+    },
+    "InvitationStatus": {
+        "Accepted": "Accepted",
+        "Rejected": "Rejected"
     }
 }

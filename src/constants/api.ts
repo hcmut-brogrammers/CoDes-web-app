@@ -5,6 +5,7 @@ export const ApiEndpoint = {
   Organizations: () => '/organizations',
   Organization: (organizationId: string) =>
     `${ApiEndpoint.Organizations()}/${organizationId}`,
+  OrganizationMembers: () => `${ApiEndpoint.Organizations()}/members`,
   SwitchOrganization: () =>
     `${ApiEndpoint.Organizations()}/switch-organization`,
   UsersByEmail: (email: string) => `/users?email=${email}`,
@@ -13,6 +14,8 @@ export const ApiEndpoint = {
     `${ApiEndpoint.Invitations()}/${invitationId}/mark-read`,
   MarkInvitationAsUnread: (invitationId: string) =>
     `${ApiEndpoint.Invitations()}/${invitationId}/mark-unread`,
+  TakeInvitationAction: () => `${ApiEndpoint.Invitations()}/action`,
+  UninviteMember: () => `${ApiEndpoint.Organizations()}/uninvite-member`,
 };
 
 export enum RequestMethod {

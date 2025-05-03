@@ -51,4 +51,9 @@ export const OrganizationQuery = {
     );
     OrganizationQuery.setOrganizations(updatedOrganizations);
   },
+  invalidateOrganizations: () => {
+    queryClient.invalidateQueries({
+      queryKey: [QueryKey.Organizations],
+    });
+  },
 };

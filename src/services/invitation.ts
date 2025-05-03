@@ -1,5 +1,6 @@
 import apiClient from '@/api-client';
 import { ApiEndpoint } from '@/constants/api';
+import { InviteeAction } from '@/constants/enum';
 import { IInvitation, IUserInvitation } from '@/types/invitation';
 
 interface ICreateInvitationsParams {
@@ -50,5 +51,34 @@ export const markUserInvitationAsUnread = async (
 ) => {
   return await apiClient.post<IMarkUserInvitationAsUnreadResponse>(
     ApiEndpoint.MarkInvitationAsUnread(params.invitation_id),
+  );
+};
+
+export interface ITakeInvitationActionsParams {
+  invitation_id: string;
+  action: InviteeAction;
+}
+interface ITakeInvitationActionsResponse {
+  success: boolean;
+}
+export const takeInvitationAction = async (
+  params: ITakeInvitationActionsParams,
+) => {
+  return await apiClient.post<ITakeInvitationActionsResponse>(
+    ApiEndpoint.TakeInvitationAction(),
+    params,
+  );
+};
+
+export interface IUninviteMemberParams {
+  member_id: string;
+}
+interface IUninviteMemberResponse {
+  success: boolean;
+}
+export const uninviteMember = async (params: IUninviteMemberParams) => {
+  return await apiClient.post<IUninviteMemberResponse>(
+    ApiEndpoint.UninviteMember(),
+    params,
   );
 };

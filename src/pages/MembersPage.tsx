@@ -4,6 +4,13 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip, { ChipProps } from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
+import Paper from '@mui/material/Paper';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
 import { vsprintf } from 'sprintf-js';
@@ -16,25 +23,110 @@ import Modal from '@/components/ui/Modal';
 import { useCreateStyles } from '@/hooks/use-app-style';
 import useAutocomplete from '@/hooks/use-autocomplete';
 import useCreateInvitations from '@/hooks/use-create-invitations';
+import useFetchOrganizationMembers from '@/hooks/use-fetch-organization-members';
 import useModal from '@/hooks/use-modal';
+import useUninviteMember from '@/hooks/use-uninvite-member';
 import { searchUsersByEmail } from '@/services/user';
 import useAuthStore from '@/stores/auth-store';
 import { AppStyleVariable } from '@/styles';
 import { mergeSx } from '@/styles/helper';
+import { IOrganizationMember } from '@/types/organization';
 import { FunctionCreateStyles } from '@/types/style';
-import { IMatchedUser } from '@/types/user';
+import { IMatchedUser, UserRole } from '@/types/user';
 import { CreateInvitationsFormSchema } from '@/utils/schemas';
 
 const MembersPage: FC = () => {
   return (
-    <Box>
+    <Box sx={{ padding: '16px' }}>
       <Column>
         <AddMemberButton />
+        <ListMembers />
       </Column>
     </Box>
   );
 };
 export default MembersPage;
+
+const ListMembers: FC = () => {
+  const { tokenData } = useAuthStore();
+  const {
+    data: organizationMembersData,
+    isFetched: isOrganizationMembersDataFetched,
+  } = useFetchOrganizationMembers();
+
+  const isLoading =
+    !organizationMembersData || !isOrganizationMembersDataFetched;
+  const showUninviteButton = (member: IOrganizationMember) =>
+    tokenData?.role === UserRole.OrganizationAdmin &&
+    tokenData?.user_id !== member.member_id;
+
+  return (
+    <Box>
+      {isLoading ? (
+        <CircularProgress />
+      ) : (
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Member ID</TableCell>
+                <TableCell>Member</TableCell>
+                <TableCell align="right">Email</TableCell>
+                <TableCell align="right">Role</TableCell>
+                <TableCell align="right">Joined at</TableCell>
+                <TableCell align="right">Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {organizationMembersData.map((member) => (
+                <TableRow
+                  key={member.member_id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {member.member_id}
+                  </TableCell>
+                  <TableCell align="right">{member.username}</TableCell>
+                  <TableCell align="right">{member.email}</TableCell>
+                  <TableCell align="right">{member.role}</TableCell>
+                  <TableCell align="right">{member.joined_at}</TableCell>
+                  <TableCell align="right">
+                    {showUninviteButton(member) && (
+                      <UninviteMemberButton
+                        memberId={member.member_id}
+                        memberEmail={member.email}
+                      />
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+    </Box>
+  );
+};
+
+const UninviteMemberButton: FC<{ memberId: string; memberEmail: string }> = ({
+  memberEmail,
+  memberId,
+}) => {
+  const { mutateAsync: uninviteMemberAsync, isPending } = useUninviteMember();
+
+  const handleClick = async () => {
+    await uninviteMemberAsync({
+      member_id: memberId,
+      member_email: memberEmail,
+    });
+  };
+
+  return (
+    <Button color="error" loading={isPending} onClick={handleClick}>
+      {Labels.Actions.Uninvite}
+    </Button>
+  );
+};
 
 interface IForm {
   users: IMatchedUser[];
@@ -73,7 +165,11 @@ const AddMemberButton: FC = () => {
 
   return (
     <>
-      <Button variant="contained" onClick={handleOpenModal}>
+      <Button
+        variant="contained"
+        onClick={handleOpenModal}
+        sx={{ alignSelf: 'flex-end' }}
+      >
         {Labels.Actions.AddMember}
       </Button>
       <Modal

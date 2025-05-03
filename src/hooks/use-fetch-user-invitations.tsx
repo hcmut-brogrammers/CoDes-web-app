@@ -4,7 +4,7 @@ import { QueryKey } from '@/constants/query-client';
 import { fetchUserInvitations } from '@/services/invitation';
 import useAuthStore from '@/stores/auth-store';
 
-const RefetchInterval = 1000 * 30; // 30 seconds
+const RefetchIntervalMs = 1000 * 30; // 30 seconds
 const useFetchUserInvitations = () => {
   const { tokenData } = useAuthStore();
   const enabled = !!tokenData;
@@ -24,7 +24,7 @@ const useFetchUserInvitations = () => {
       });
       return sortedInvitations;
     },
-    refetchInterval: RefetchInterval,
+    refetchInterval: RefetchIntervalMs,
     enabled,
   });
 };
