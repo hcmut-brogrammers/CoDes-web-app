@@ -15,6 +15,7 @@ import { FunctionCreateStyles } from '@/types/style';
 import Column from '../ui/Column';
 import { ApartmentRoundedIcon, GroupRoundedIcon } from '../ui/Icons';
 
+import InvitationNotiMenu from './InvitationNotiMenu';
 import OrganizationSelect from './OrganizationSelect';
 import UserAvatar from './UserAvatar';
 
@@ -22,6 +23,7 @@ const Sidebar: FC = () => {
   const styles = useCreateStyles(createStyles);
   return (
     <Column sx={styles.container}>
+      <InvitationsNoti />
       <OrganizationSection />
       <Box sx={{ flex: 1 }}></Box>
       <MenuList>
@@ -29,6 +31,15 @@ const Sidebar: FC = () => {
         <OrganizationInfo />
       </MenuList>
       <UserSection />
+    </Column>
+  );
+};
+
+const InvitationsNoti: FC = () => {
+  const styles = useCreateStyles(createStyles);
+  return (
+    <Column sx={styles.notiSection}>
+      <InvitationNotiMenu />
     </Column>
   );
 };
@@ -95,6 +106,9 @@ const createStyles: FunctionCreateStyles = (theme) => {
       border,
       height: '100%',
       width: '250px',
+    },
+    notiSection: {
+      ...sectionStyles,
     },
     organizationSection: {
       ...sectionStyles,

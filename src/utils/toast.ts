@@ -26,6 +26,14 @@ const ToastSuccess = {
     ]);
     toast.success(message);
   },
+  MarkInvitationAsRead: () => {
+    const message = Labels.Toast.Success.MarkInvitationAsRead;
+    toast.success(message);
+  },
+  MarkInvitationAsUnread: () => {
+    const message = Labels.Toast.Success.MarkInvitationAsUnread;
+    toast.success(message);
+  },
 };
 
 export const ToastManager = {

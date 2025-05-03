@@ -8,9 +8,12 @@ export enum MutationKey {
   RefreshToken = 'RefreshToken',
   SwitchOrganization = 'SwitchOrganization',
   CreateInvitations = 'CreateInvitations',
+  MarkInvitationAsRead = 'MarkInvitationAsRead',
+  MarkInvitationAsUnread = 'MarkInvitationAsUnread',
 }
 
 export enum QueryKey {
   Organizations = 'Organizations',
   Users = 'Users',
+  UserInvitations = 'UserInvitations',
 }
