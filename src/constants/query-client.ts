@@ -5,6 +5,7 @@ export enum MutationKey {
   CreateOrganization = 'CreateOrganization',
   UpdateOrganization = 'UpdateOrganization',
   DeleteOrganization = 'DeleteOrganization',
+  DeleteDesignProject = 'DeleteDesignProject',
   RefreshToken = 'RefreshToken',
   SwitchOrganization = 'SwitchOrganization',
   CreateInvitations = 'CreateInvitations',
@@ -12,6 +13,7 @@ export enum MutationKey {
   UninviteMember = 'UninviteMember',
   MarkInvitationAsRead = 'MarkInvitationAsRead',
   MarkInvitationAsUnread = 'MarkInvitationAsUnread',
+  CreateDesignProject = 'CreateDesignProject',
 }
 
 export enum QueryKey {
@@ -19,4 +21,5 @@ export enum QueryKey {
   OrganizationMembers = 'OrganizationMembers',
   Users = 'Users',
   UserInvitations = 'UserInvitations',
+  DesignProjects = 'DesignProjects',
 }

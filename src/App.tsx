@@ -11,6 +11,7 @@ import {
 import AuthenticatedRoute from './components/AuthenticatedRoute';
 import { AppRoute, RoutePath } from './constants/app-routes';
 import DashboardPage from './pages/DashboardPage';
+import DesignProjectsPage from './pages/DesignProjectsPage';
 import MembersPage from './pages/MembersPage';
 import OrganizationInfoPage from './pages/OrganizationInfoPage';
 import OrganizationPage from './pages/OrganizationPage';
@@ -59,6 +60,10 @@ const App: FC = () => {
             element={<OrganizationInfoPage />}
           />
           <Route path={RoutePath.MembersInfo()} element={<MembersPage />} />
+          <Route
+            path={RoutePath.DesignProjects()}
+            element={<DesignProjectsPage />}
+          />
         </Route>
       </Route>
     </Routes>

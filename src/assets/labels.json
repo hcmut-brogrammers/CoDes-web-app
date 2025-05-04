@@ -12,7 +12,8 @@
         "ConfirmPassword": "Confirm Password",
         "OrganizationName": "Organization Name",
         "OrganizationAvatarUrl": "Organization Avatar URL (optional)",
-        "SearchUsers": "Search users"
+        "SearchUsers": "Search users",
+        "DesignProjectName": "Design Project Name"
     },
     "InputPlaceholder": {
         "EnterUsername": "Enter your username",
@@ -20,7 +21,8 @@
         "EnterPassword": "Enter your password",
         "EnterConfirmPassword": "Re-enter your password",
         "AssignOrganizationName": "Assign an organization name",
-        "AssignOrganizationAvatarUrl": "Assign an organization avatar URL"
+        "AssignOrganizationAvatarUrl": "Assign an organization avatar URL",
+        "DesignProjectName": "Design Project Name"
     },
     "Actions": {
         "SignIn": "Sign In",
@@ -30,14 +32,15 @@
         "Save": "Save",
         "Delete": "Delete",
         "Confirm": "Confirm",
-        "CreateOrganization": "Create Organization",
         "AddMember": "Add Member",
         "Send": "Send",
         "MarkRead": "Mark as Read",
         "MarkUnread": "Mark as Unread",
         "Accept": "Accept",
         "Reject": "Reject",
-        "Uninvite": "Uninvite"
+        "Uninvite": "Uninvite",
+        "CreateOrganization": "Create Organization",
+        "CreateDesignProject": "Create Design Project"
     },
     "FieldValidation": {
         "EmailRequired": "Email is required",
@@ -66,11 +69,13 @@
     },
     "Sidebar": {
         "OrganizationInfo": "Organization Info",
-        "MembersInfo": "Members"
+        "MembersInfo": "Members",
+        "DesignProjects": "Design Projects"
     },
     "Modal": {
         "DeleteOrganization": "Delete Organization",
-        "AddMember": "Add Member"
+        "AddMember": "Add Member",
+        "CreateDesignProject": "Create Design Project"
     },
     "Loading": {
         "SearchingUsers": "Searching for users that match \"%s\"..."
