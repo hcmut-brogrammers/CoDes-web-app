@@ -16,6 +16,9 @@ export const ApiEndpoint = {
     `${ApiEndpoint.Invitations()}/${invitationId}/mark-unread`,
   TakeInvitationAction: () => `${ApiEndpoint.Invitations()}/action`,
   UninviteMember: () => `${ApiEndpoint.Organizations()}/uninvite-member`,
+  DesignProjects: () => '/design-projects',
+  DeleteDesignProject: (designProjectId: string) =>
+    `${ApiEndpoint.DesignProjects()}/${designProjectId}`,
 };
 
 export enum RequestMethod {
