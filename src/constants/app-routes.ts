@@ -5,6 +5,7 @@ export const RoutePath = {
   Organization: () => `${RoutePath.Dashboard()}/organizations/:organizationId`,
   OrganizationInfo: () => `${RoutePath.Organization()}/info`,
   MembersInfo: () => `${RoutePath.Organization()}/members`,
+  DesignProjects: () => `${RoutePath.Organization()}/design-projects`,
 };
 
 export const AppRoute = {
@@ -17,4 +18,6 @@ export const AppRoute = {
     `${AppRoute.Organization(organizationId)}/info`,
   MembersInfo: (organizationId: string) =>
     `${AppRoute.Organization(organizationId)}/members`,
+  DesignProjects: (organizationId: string) =>
+    `${AppRoute.Organization(organizationId)}/design-projects`,
 };

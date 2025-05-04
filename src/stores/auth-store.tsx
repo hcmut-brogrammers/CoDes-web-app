@@ -16,6 +16,7 @@ interface IState extends IStateData {
   setRefreshTokenId: (refreshTokenId: string) => void;
   setTokenData: (tokenData: ITokenData) => void;
   checkIfIsAuthenticated: () => boolean;
+  checkIfIsOrganizationAdmin: () => boolean;
   resetStore: () => void;
 }
 
@@ -51,6 +52,13 @@ const useAuthStore = create<IState>()(
       checkIfIsAuthenticated: () => {
         const { accessToken, refreshTokenId } = get();
         return !!accessToken && !!refreshTokenId;
+      },
+      checkIfIsOrganizationAdmin: () => {
+        const { tokenData, checkIfIsAuthenticated } = get();
+        return (
+          checkIfIsAuthenticated() &&
+          tokenData.role === UserRole.OrganizationAdmin
+        );
       },
       resetStore: () => {
         set(() => ({

@@ -4,4 +4,10 @@ export const AppStylesVariable = {
     medium: '8px',
     large: '16px',
   },
+  fontWeight: {
+    light: 300,
+    regular: 400,
+    medium: 500,
+    bold: 700,
+  },
 };

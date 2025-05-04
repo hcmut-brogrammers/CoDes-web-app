@@ -25,8 +25,13 @@ const MatchedUserSchema = Yup.object({
   email: Yup.string().email(),
   username: Yup.string(),
 });
+
 export const CreateInvitationsFormSchema = Yup.object({
   users: Yup.array().of(MatchedUserSchema).min(1).required(),
+});
+
+export const CreateDesignProjectFormSchema = Yup.object({
+  name: Yup.string().required(),
 });
 
 export const AppEnvSchema = Yup.object({

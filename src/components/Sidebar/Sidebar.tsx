@@ -13,7 +13,11 @@ import useGlobalStore from '@/stores/global-store';
 import { FunctionCreateStyles } from '@/types/style';
 
 import Column from '../ui/Column';
-import { ApartmentRoundedIcon, GroupRoundedIcon } from '../ui/Icons';
+import {
+  ApartmentRoundedIcon,
+  BrushRoundedIcon,
+  GroupRoundedIcon,
+} from '../ui/Icons';
 
 import InvitationNotiMenu from './InvitationNotiMenu';
 import OrganizationSelect from './OrganizationSelect';
@@ -27,6 +31,7 @@ const Sidebar: FC = () => {
       <OrganizationSection />
       <Box sx={{ flex: 1 }}></Box>
       <MenuList>
+        <DesignProjects />
         <MembersInfo />
         <OrganizationInfo />
       </MenuList>
@@ -59,6 +64,20 @@ const UserSection: FC = () => {
     <Column sx={styles.userAvatarContainer}>
       <UserAvatar />
     </Column>
+  );
+};
+
+const DesignProjects: FC = () => {
+  const { currentOrganizationId } = useGlobalStore();
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate(AppRoute.DesignProjects(currentOrganizationId));
+  };
+  return (
+    <StyledMenuItem onClick={handleClick}>
+      <BrushRoundedIcon />
+      <Typography>{Labels.Sidebar.DesignProjects}</Typography>
+    </StyledMenuItem>
   );
 };
 
