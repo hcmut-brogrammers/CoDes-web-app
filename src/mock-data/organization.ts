@@ -12,6 +12,7 @@ export const MockOrganizationData = {
     is_deleted: false,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
+    members: [],
     ...overrides,
   }),
 };

@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 
 import { Labels } from '@/assets';
+import { AppRoute } from '@/constants/app-routes';
 import { MutationKey } from '@/constants/query-client';
 import {
   ISwitchOrganizationParams,
@@ -11,6 +13,8 @@ import useGlobalStore from '@/stores/global-store';
 import { parseAuthToken } from '@/utils/auth';
 
 const useSwitchOrganization = () => {
+  const navigate = useNavigate();
+
   return useMutation({
     mutationKey: [MutationKey.SwitchOrganization],
     mutationFn: async (
@@ -33,6 +37,7 @@ const useSwitchOrganization = () => {
       if (parsedTokenData) {
         setTokenData(parsedTokenData);
         setCurrentOrganizationId(parsedTokenData.organization_id);
+        navigate(AppRoute.Organization(parsedTokenData.organization_id));
       }
     },
     onError: (error) => {

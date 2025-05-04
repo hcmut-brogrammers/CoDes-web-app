@@ -1,7 +1,7 @@
 import apiClient from '@/api-client';
 import { ApiEndpoint } from '@/constants/api';
 import { IRefreshTokenParams, IRefreshTokenResponse } from '@/types/auth';
-import { IOrganization } from '@/types/organization';
+import { IOrganization, IOrganizationMember } from '@/types/organization';
 
 interface ICreateOrganizationParams {
   name: string;
@@ -85,3 +85,13 @@ export const switchOrganization = async (
     params,
   );
 };
+
+interface IFetchOrganizationMembersResponse {
+  members: IOrganizationMember[];
+}
+export const fetchOrganizationMembers =
+  async (): Promise<IFetchOrganizationMembersResponse> => {
+    return await apiClient.get<IFetchOrganizationMembersResponse>(
+      ApiEndpoint.OrganizationMembers(),
+    );
+  };
