@@ -22,4 +22,5 @@ export enum QueryKey {
   Users = 'Users',
   UserInvitations = 'UserInvitations',
   DesignProjects = 'DesignProjects',
+  DesignElements = 'DesignElements',
 }

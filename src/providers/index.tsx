@@ -1,12 +1,17 @@
 import { FC, PropsWithChildren } from 'react';
 
+import DesignProjectWebSocketProvider from './DesignProjectWebSocketProvider';
 import SetUpMuiThemeProvider from './SetUpMuiThemeProvider';
 import SetUpQueryClientProvider from './SetUpQueryClientProvider';
 
 const SetUpProviders: FC<PropsWithChildren> = ({ children }) => {
   return (
     <SetUpQueryClientProvider>
-      <SetUpMuiThemeProvider>{children}</SetUpMuiThemeProvider>
+      <SetUpMuiThemeProvider>
+        <DesignProjectWebSocketProvider>
+          {children}
+        </DesignProjectWebSocketProvider>
+      </SetUpMuiThemeProvider>
     </SetUpQueryClientProvider>
   );
 };

@@ -4,7 +4,6 @@ import IconButton from '@mui/material/IconButton';
 import ImageListItem from '@mui/material/ImageListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MenuItem from '@mui/material/MenuItem';
 import Skeleton from '@mui/material/Skeleton';
 import { SxProps } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
@@ -17,6 +16,7 @@ import {
 } from '@/hooks/use-app-style';
 import useDeleteDesignProject from '@/hooks/use-delete-design-project';
 import useMenu from '@/hooks/use-menu';
+import useNavigateRoute from '@/hooks/use-navigate-route';
 import useAuthStore from '@/stores/auth-store';
 import { AppColor, AppStyleVariable } from '@/styles';
 import { AppStylesVariable } from '@/styles/app-style-variable';
@@ -28,7 +28,7 @@ import {
 
 import { DeleteRoundedIcon, MoreHorizRoundedIcon } from '../ui/Icons';
 import Row from '../ui/Row';
-import StyledMenu from '../ui/StyledMenu';
+import StyledMenu, { StyledMenuItem } from '../ui/StyledMenu';
 
 interface IProps {
   designProjects: IDesignProject[];
@@ -61,7 +61,6 @@ const ListDesignProject: FC<IProps> = ({ designProjects, isLoading }) => {
 const DesignProject: FC<{ designProject: IDesignProject }> = ({
   designProject,
 }) => {
-  const { checkIfIsOrganizationAdmin } = useAuthStore();
   const {
     mutateAsync: deleteDesignProjectAsync,
     isPending: isDeletingDesignProject,
@@ -69,7 +68,6 @@ const DesignProject: FC<{ designProject: IDesignProject }> = ({
   const styles = useCreateStyles(createStyles);
   const conditionalStyles = useCreateConditionalStyles(createConditionalStyles);
 
-  const isOrganizationAdmin = checkIfIsOrganizationAdmin();
   const editedText = `Edited ${formatRelative(
     new Date(designProject.updated_at),
     new Date(),
@@ -86,12 +84,10 @@ const DesignProject: FC<{ designProject: IDesignProject }> = ({
       })}
     >
       <ImageListItem sx={styles.thumbnail}>
-        {isOrganizationAdmin && (
-          <MoreButton
-            designProjectId={designProject.id}
-            onDelete={handleDeleteDesignProject}
-          />
-        )}
+        <MoreButton
+          designProjectId={designProject.id}
+          onDelete={handleDeleteDesignProject}
+        />
         <img
           loading="lazy"
           src={designProject.thumbnail_url}
@@ -111,11 +107,21 @@ const MoreButton: FC<{
   designProjectId: string;
   onDelete: (designProjectId: string) => Promise<void>;
 }> = ({ designProjectId, onDelete }) => {
+  const { navigateDesignProjectCanvas } = useNavigateRoute();
+  const { checkIfIsOrganizationAdmin } = useAuthStore();
   const styles = useCreateStyles(createStyles);
   const { anchorEl, menuOpen, handleOpenMenu, handleCloseMenu } = useMenu();
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const isOrganizationAdmin = checkIfIsOrganizationAdmin();
+
+  const handleClickOpenMenu = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     handleOpenMenu(e);
+  };
+
+  const handleOpenFile = () => {
+    navigateDesignProjectCanvas(designProjectId);
   };
 
   const handleDeleteDesignProject = async () => {
@@ -125,16 +131,24 @@ const MoreButton: FC<{
 
   return (
     <>
-      <IconButton sx={styles.moreButton} onClick={handleClick}>
+      <IconButton sx={styles.moreButton} onClick={handleClickOpenMenu}>
         <MoreHorizRoundedIcon />
       </IconButton>
       <StyledMenu open={menuOpen} anchorEl={anchorEl} onClose={handleCloseMenu}>
-        <MenuItem onClick={handleDeleteDesignProject}>
+        <StyledMenuItem onClick={handleOpenFile}>
           <ListItemIcon>
             <DeleteRoundedIcon />
           </ListItemIcon>
-          <ListItemText>{Labels.Actions.Delete}</ListItemText>
-        </MenuItem>
+          <ListItemText>{Labels.Actions.OpenFile}</ListItemText>
+        </StyledMenuItem>
+        {isOrganizationAdmin && (
+          <StyledMenuItem onClick={handleDeleteDesignProject}>
+            <ListItemIcon>
+              <DeleteRoundedIcon color="error" />
+            </ListItemIcon>
+            <ListItemText>{Labels.Actions.Delete}</ListItemText>
+          </StyledMenuItem>
+        )}
       </StyledMenu>
     </>
   );

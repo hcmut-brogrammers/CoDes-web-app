@@ -43,6 +43,22 @@ export const shadeHex = (hex: string, shadeFactor: number = 0.2) => {
   return `rgb(${shadedRgb.r}, ${shadedRgb.g}, ${shadedRgb.b})`;
 };
 
+export const uuidToHashedColor = (uuid: string): string => {
+  if (!uuid) return '#000000';
+
+  let hash = 0;
+  for (let i = 0; i < uuid.length; i++) {
+    hash = uuid.charCodeAt(i) + ((hash << 5) - hash);
+    hash |= 0; // force to 32-bit integer
+  }
+
+  const r = (hash >> 16) & 0xff;
+  const g = (hash >> 8) & 0xff;
+  const b = hash & 0xff;
+
+  return `#${[r, g, b].map((x) => x.toString(16).padStart(2, '0')).join('')}`;
+};
+
 export const mergeSx = (
   ...sx: (Nilable<SxProps<Theme>> | Nilable<SxProps<Theme>>[])[]
 ): SxProps<Theme> => {
