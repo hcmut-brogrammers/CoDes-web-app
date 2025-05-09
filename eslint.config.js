@@ -48,7 +48,14 @@ export default tseslint.config(
       '@typescript-eslint/no-empty-object-type': [
         'error',
         {
-          allowInterfaces: 'with-single-extends',
+          allowInterfaces: 'always',
+        },
+      ],
+      '@typescript-eslint/no-explicit-any': [
+        'error',
+        {
+          fixToUnknown: false,
+          ignoreRestArgs: false,
         },
       ],
     },

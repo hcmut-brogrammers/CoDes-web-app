@@ -39,6 +39,7 @@
         "Accept": "Accept",
         "Reject": "Reject",
         "Uninvite": "Uninvite",
+        "OpenFile": "Open File",
         "CreateOrganization": "Create Organization",
         "CreateDesignProject": "Create Design Project"
     },
@@ -48,15 +49,17 @@
         "PasswordMisatch": "Entered passwords do not match",
         "ConfirmPasswordRequired": "Confirm Password is required",
         "UsernameRequired": "Username is required",
+        "OrganizationNameRequired": "Organization Name is required",
         "ApiUrlRequired": "API URL is required",
-        "OrganizationNameRequired": "Organization Name is required"
+        "WebSocketUrlRequired": "WebSocket URL is required"
     },
     "Console": {
         "Error": {
             "SignIn": "Error signing in",
             "SignUp": "Error signing up",
             "ParseJwtTokenPayload": "Error parsing JWT token payload",
-            "Unauthorized": "Unauthorized"
+            "Unauthorized": "Unauthorized",
+            "WebSocketConnection": "Error connecting to WebSocket"
         }
     },
     "Error": {

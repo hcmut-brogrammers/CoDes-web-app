@@ -228,9 +228,10 @@ const UserAutocomplete: FC<{
       setOptions(response.users);
       handleMenuLoaded();
     },
-    [handleLoadingMenu, handleMenuLoaded, setOptions],
+    [handleLoadingMenu, setOptions, handleMenuLoaded],
   );
 
+  // NOTE: not set handleFetchMatchedUsers as useCallback because it will cause infinite loop
   useEffect(() => {
     handleFetchMatchedUsers(debouncedSearchQuery);
   }, [debouncedSearchQuery]);

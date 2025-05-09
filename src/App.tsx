@@ -10,6 +10,8 @@ import {
 
 import AuthenticatedRoute from './components/AuthenticatedRoute';
 import { AppRoute, RoutePath } from './constants/app-routes';
+import useResetDesignProjectStoreListener from './hooks/use-reset-design-project-store-listenter';
+import CanvasPage from './pages/CanvasPage';
 import DashboardPage from './pages/DashboardPage';
 import DesignProjectsPage from './pages/DesignProjectsPage';
 import MembersPage from './pages/MembersPage';
@@ -27,6 +29,7 @@ import './index.css';
 const RedirectedRoutes: string[] = [AppRoute.SignIn(), AppRoute.SignUp()];
 
 const App: FC = () => {
+  useResetDesignProjectStoreListener();
   const { checkIfIsAuthenticated } = useAuthStore();
   const location = useLocation();
   const navigate = useNavigate();
@@ -50,6 +53,7 @@ const App: FC = () => {
       <Route path={RoutePath.SignUp()} element={<SignUpPage />} />
       <Route path={RoutePath.SignIn()} element={<SignInPage />} />
       <Route element={<AuthenticatedRoute />}>
+        <Route path={RoutePath.Canvas()} element={<CanvasPage />} />
         <Route path={RoutePath.Dashboard()} element={<DashboardPage />}>
           <Route
             path={RoutePath.Organization()}
