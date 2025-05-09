@@ -2,7 +2,6 @@ import { FC } from 'react';
 import Badge from '@mui/material/Badge';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { parseISO } from 'date-fns';
 
@@ -15,12 +14,23 @@ import useMenu from '@/hooks/use-menu';
 import useTakeInvitationAction from '@/hooks/use-take-invitation-action';
 import { IUserInvitation } from '@/types/invitation';
 
-import Column from '../ui/Column';
-import { NotificationsRoundedIcon } from '../ui/Icons';
-import Row from '../ui/Row';
-import StyledMenu, { StyledMenuItem, StyledMenuProps } from '../ui/StyledMenu';
+import Column from '../../ui/Column';
+import { NotificationsRoundedIcon } from '../../ui/Icons';
+import Row from '../../ui/Row';
+import StyledMenu, {
+  StyledMenuItem,
+  StyledMenuProps,
+} from '../../ui/StyledMenu';
+import SidebarListItem from '../SidebarListItem';
+import SidebarListItemButton from '../SidebarListItemButton';
+import SidebarListItemIcon from '../SidebarListItemIcon';
+import SidebarListItemText from '../SidebarListItemText';
 
-const InvitationNotiMenu: FC = () => {
+interface IProps {
+  open: boolean;
+}
+
+const UserInvitations: FC<IProps> = ({ open }) => {
   const { anchorEl, handleOpenMenu, handleCloseMenu, menuOpen } = useMenu();
   const { data: userInvitationsData, isFetched: isUserInvitationsDataFetched } =
     useFetchUserInvitations();
@@ -33,13 +43,19 @@ const InvitationNotiMenu: FC = () => {
 
   return (
     <>
-      <Column alignItems="flex-end">
-        <IconButton onClick={handleOpenMenu}>
-          <Badge badgeContent={badgeContent} color="secondary">
-            <NotificationsRoundedIcon color="action" />
-          </Badge>
-        </IconButton>
-      </Column>
+      <SidebarListItem>
+        <SidebarListItemButton onClick={handleOpenMenu}>
+          <SidebarListItemIcon open={open}>
+            <Badge badgeContent={badgeContent} color="secondary">
+              <NotificationsRoundedIcon color="action" />
+            </Badge>
+          </SidebarListItemIcon>
+          <SidebarListItemText
+            open={open}
+            primary={Labels.Sidebar.UserSection.Invitations}
+          />
+        </SidebarListItemButton>
+      </SidebarListItem>
       <InvitationsMenu
         anchorEl={anchorEl}
         open={menuOpen}
@@ -60,6 +76,14 @@ const InvitationsMenu: FC<
   return (
     <StyledMenu
       {...props}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'left',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'left',
+      }}
       slotProps={{
         list: {
           sx: {
@@ -212,4 +236,4 @@ const MarkUnreadButton: FC<{ invitationId: string }> = ({ invitationId }) => {
   );
 };
 
-export default InvitationNotiMenu;
+export default UserInvitations;

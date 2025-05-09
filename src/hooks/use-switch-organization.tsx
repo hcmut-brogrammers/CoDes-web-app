@@ -37,7 +37,7 @@ const useSwitchOrganization = () => {
       if (parsedTokenData) {
         setTokenData(parsedTokenData);
         setCurrentOrganizationId(parsedTokenData.organization_id);
-        navigate(AppRoute.Organization(parsedTokenData.organization_id));
+        navigate(AppRoute.Dashboard());
       }
     },
     onError: (error) => {

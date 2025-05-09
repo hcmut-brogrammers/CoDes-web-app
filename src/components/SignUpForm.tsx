@@ -1,18 +1,25 @@
 import { ChangeEvent, FC } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
+import Divider from '@mui/material/Divider';
+import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { useFormik } from 'formik';
 
 import { Labels } from '@/assets';
+import { AppRoute } from '@/constants/app-routes';
 import { useCreateStyles } from '@/hooks/use-app-style';
 import useSignUp from '@/hooks/use-sign-up';
 import { ISignUpParams } from '@/services/auth';
 import { FunctionCreateStyles } from '@/types/style';
 import { UserRole } from '@/types/user';
 import { SignUpFormSchema } from '@/utils/schemas';
+
+import Column from './ui/Column';
+import EmailInput from './ui/EmailInput';
+import PasswordInput from './ui/PasswordInput';
+import Row from './ui/Row';
+import UsernameInput from './ui/UsernameInput';
 
 const SignUpForm: FC = () => {
   const styles = useCreateStyles(createStyles);
@@ -40,61 +47,73 @@ const SignUpForm: FC = () => {
     !Object.values(formik.errors).length && !formik.isSubmitting;
   return (
     <Box component="form" onSubmit={formik.handleSubmit} sx={styles.container}>
-      <Stack direction="column" spacing={4}>
-        <Typography variant="h6" sx={{ textAlign: 'center' }}>
-          {Labels.Forms.SignUp}
-        </Typography>
-        <TextField
-          variant="outlined"
-          type="text"
-          placeholder={Labels.InputPlaceholder.EnterUsername}
-          label={Labels.InputFields.Username}
-          disabled={formik.isSubmitting}
-          value={username}
-          onChange={handleChangeField('username')}
-        />
-        <TextField
-          variant="outlined"
-          type="email"
-          placeholder={Labels.InputPlaceholder.EnterEmail}
-          label={Labels.InputFields.Email}
-          disabled={formik.isSubmitting}
-          value={email}
-          onChange={handleChangeField('email')}
-        />
-        <TextField
-          autoComplete=""
-          variant="outlined"
-          type="password"
-          placeholder={Labels.InputPlaceholder.EnterPassword}
-          label={Labels.InputFields.Password}
-          disabled={formik.isSubmitting}
-          value={password}
-          onChange={handleChangeField('password')}
-        />
-        <TextField
-          variant="outlined"
-          type="password"
-          name="confirmPassword"
-          placeholder={Labels.InputPlaceholder.EnterConfirmPassword}
-          error={showConfirmPasswordError}
-          helperText={
-            showConfirmPasswordError ? formik.errors.confirmPassword : null
-          }
-          label={Labels.InputFields.ConfirmPassword}
-          disabled={formik.isSubmitting}
-          value={confirmPassword}
-          onChange={handleChangeField('confirmPassword')}
-        />
+      <Column gap={2}>
+        <Column>
+          <Typography variant="h5">{Labels.Form.SignUp.Title}</Typography>
+          <Typography variant="body2">
+            {Labels.Form.SignUp.Description}
+          </Typography>
+        </Column>
+        <Divider />
+        <Column gap={2}>
+          <UsernameInput
+            inputProps={{
+              placeholder: Labels.InputPlaceholder.EnterUsername,
+              disabled: formik.isSubmitting,
+              label: Labels.InputFields.Username,
+              value: username,
+              onChange: handleChangeField('username'),
+            }}
+          />
+          <EmailInput
+            inputProps={{
+              placeholder: Labels.InputPlaceholder.EnterEmail,
+              disabled: formik.isSubmitting,
+              label: Labels.InputFields.Email,
+              value: email,
+              onChange: handleChangeField('email'),
+            }}
+          />
+          <PasswordInput
+            inputProps={{
+              placeholder: Labels.InputPlaceholder.EnterPassword,
+              disabled: formik.isSubmitting,
+              label: Labels.InputFields.Password,
+              value: password,
+              onChange: handleChangeField('password'),
+            }}
+          />
+          {/* TODO: add helper text */}
+          <PasswordInput
+            inputProps={{
+              placeholder: Labels.InputPlaceholder.EnterConfirmPassword,
+              disabled: formik.isSubmitting,
+              label: Labels.InputFields.ConfirmPassword,
+              error: showConfirmPasswordError,
+              value: confirmPassword,
+              onChange: handleChangeField('confirmPassword'),
+            }}
+          />
+        </Column>
+        <Divider />
         <Button
+          fullWidth
           type="submit"
           variant="contained"
           disabled={!canSubmit}
           loading={formik.isSubmitting}
+          sx={styles.button}
         >
           {Labels.Actions.SignUp}
         </Button>
-      </Stack>
+      </Column>
+      <Row sx={styles.notHaveAccountContainer}>
+        <Typography component="span">
+          {Labels.Form.SignUp.AlreadyHaveAccount}
+        </Typography>
+        &nbsp;
+        <Link href={AppRoute.SignIn()}>{Labels.Form.SignUp.SignInHere}</Link>
+      </Row>
     </Box>
   );
 };
@@ -103,6 +122,14 @@ const createStyles: FunctionCreateStyles = () => {
   return {
     container: {
       width: 350,
+    },
+    button: {
+      textTransform: 'uppercase',
+    },
+    notHaveAccountContainer: {
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      marginTop: '16px',
     },
   };
 };

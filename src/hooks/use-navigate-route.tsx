@@ -17,8 +17,23 @@ const useNavigateRoute = () => {
     [setCurrentDesignProjectId, navigate],
   );
 
+  const navigateDesignProjects = useCallback(() => {
+    navigate(AppRoute.DesignProjects());
+  }, [navigate]);
+
+  const navigateMembersInfo = useCallback(() => {
+    navigate(AppRoute.MembersInfo());
+  }, [navigate]);
+
+  const navigateOrganizationInfo = useCallback(() => {
+    navigate(AppRoute.OrganizationInfo());
+  }, [navigate]);
+
   return {
     navigateDesignProjectCanvas,
+    navigateDesignProjects,
+    navigateMembersInfo,
+    navigateOrganizationInfo,
   };
 };
 

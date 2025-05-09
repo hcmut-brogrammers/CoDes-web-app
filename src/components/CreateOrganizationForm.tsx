@@ -52,7 +52,7 @@ const CreateOrganizationForm: FC<{ onSubmitSuccess?: () => void }> = ({
     <Box component="form" onSubmit={formik.handleSubmit} sx={styles.container}>
       <Stack direction="column" spacing={4}>
         <Typography variant="h6" sx={{ textAlign: 'center' }}>
-          {Labels.Forms.CreateOrganization}
+          {Labels.Form.CreateOrganization}
         </Typography>
         <TextField
           type="text"

@@ -1,7 +1,7 @@
 import { useTheme } from '@mui/material/styles';
 
 import {
-  FunctionCreateConditionalStyle,
+  FunctionCreateConditionalStyles,
   FunctionCreateStyles,
   IAppTheme,
 } from '@/types/style';
@@ -14,7 +14,7 @@ export const useCreateStyles = (createStyles: FunctionCreateStyles) => {
 };
 
 export const useCreateConditionalStyles = (
-  createConditionStyles: FunctionCreateConditionalStyle,
+  createConditionStyles: FunctionCreateConditionalStyles,
 ) => {
   const theme = useTheme();
   const appTheme = theme as IAppTheme;

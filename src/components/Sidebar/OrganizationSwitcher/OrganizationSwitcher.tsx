@@ -1,35 +1,32 @@
 import { FC } from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import { MenuItemProps } from '@mui/material/MenuItem';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 
 import { Labels } from '@/assets';
-import { useCreateStyles } from '@/hooks/use-app-style';
 import useFetchOrganizations from '@/hooks/use-fetch-organizations';
 import useMenu from '@/hooks/use-menu';
 import useModal from '@/hooks/use-modal';
 import useSwitchOrganization from '@/hooks/use-switch-organization';
 import useAuthStore from '@/stores/auth-store';
 import useGlobalStore from '@/stores/global-store';
-import { AppStyleVariable } from '@/styles';
 import { IOrganization } from '@/types/organization';
-import { FunctionCreateStyles } from '@/types/style';
 
-import {
-  AddRoundedIcon,
-  ApartmentRoundedIcon,
-  ExpandLessRoundedIcon,
-  ExpandMoreRoundedIcon,
-} from '../ui/Icons';
-import StyledMenu, { StyledMenuItem } from '../ui/StyledMenu';
+import { AddRoundedIcon } from '../../ui/Icons';
+import StyledMenu, { StyledMenuItem } from '../../ui/StyledMenu';
+import CreateOrganizationModal from '../CreateOrganizationModal';
+import SidebarListItem from '../SidebarListItem';
+import SidebarListItemButton from '../SidebarListItemButton';
+import SidebarListItemIcon from '../SidebarListItemIcon';
+import SidebarListItemText from '../SidebarListItemText';
 
-import CreateOrganizationModal from './CreateOrganizationModal';
+import OrganizationIcon from './OrganizationIcon';
 
-const OrganizationSelect: FC = () => {
-  const styles = useCreateStyles(createStyles);
+interface IProps {
+  open: boolean;
+}
+const OrganizationSwitcher: FC<IProps> = ({ open }) => {
   const { currentOrganizationId } = useGlobalStore();
   const { data: organizationsData, isFetched: isOrganizationsDataFetched } =
     useFetchOrganizations();
@@ -53,19 +50,24 @@ const OrganizationSelect: FC = () => {
   const currentOrganization = organizationsData.find(
     (organization) => organization.id === currentOrganizationId,
   );
+
+  if (!currentOrganization) {
+    return null;
+  }
+
   return (
     <>
-      <Button
-        variant="outlined"
-        startIcon={<ApartmentRoundedIcon />}
-        endIcon={
-          menuOpen ? <ExpandLessRoundedIcon /> : <ExpandMoreRoundedIcon />
-        }
-        onClick={handleOpenMenu}
-        sx={styles.button}
-      >
-        {currentOrganization?.name}
-      </Button>
+      <SidebarListItem>
+        <SidebarListItemButton onClick={handleOpenMenu}>
+          <SidebarListItemIcon open={open}>
+            <OrganizationIcon
+              organizationId={currentOrganization.id}
+              organizationName={currentOrganization.name}
+            />
+          </SidebarListItemIcon>
+          <SidebarListItemText open={open} primary={currentOrganization.name} />
+        </SidebarListItemButton>
+      </SidebarListItem>
       <StyledMenu anchorEl={anchorEl} open={menuOpen} onClose={handleCloseMenu}>
         {organizationsData.map((organization) => (
           <OrganizationMenuItem
@@ -105,10 +107,7 @@ const OrganizationMenuItem: FC<
   }
 > = ({ organization, isSelected, onClick, ...props }) => {
   const { tokenData } = useAuthStore();
-  const styles = useCreateStyles(createStyles);
-
   const isInvited = tokenData?.user_id !== organization.owner_id;
-  const firstLetter = organization.name.charAt(0).toUpperCase();
   const isDefault = organization.is_default;
   const label = isInvited
     ? `${organization.name} (Invited)`
@@ -122,29 +121,13 @@ const OrganizationMenuItem: FC<
       isSelected={isSelected}
       onClick={() => onClick(organization.id)}
     >
-      <Box sx={styles.organizationAvatar}>{firstLetter}</Box>
+      <OrganizationIcon
+        organizationId={organization.id}
+        organizationName={organization.name}
+      />
       <Typography>{label}</Typography>
     </StyledMenuItem>
   );
 };
 
-const createStyles: FunctionCreateStyles = (theme) => {
-  return {
-    button: {
-      border: 'none',
-      color: theme.palette.black,
-    },
-    organizationAvatar: {
-      width: '24px',
-      height: '24px',
-      borderRadius: AppStyleVariable.borderRadius.medium,
-      backgroundColor: theme.palette.primary.main,
-      color: theme.palette.white,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-  };
-};
-
-export default OrganizationSelect;
+export default OrganizationSwitcher;
