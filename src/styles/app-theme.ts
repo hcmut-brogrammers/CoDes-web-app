@@ -1,6 +1,7 @@
 import { createTheme } from '@mui/material/styles';
 
 import { AppColor } from './app-color';
+import { AppStyleVariable } from '.';
 
 const theme = createTheme({
   palette: AppColor,
@@ -12,7 +13,33 @@ const theme = createTheme({
     MuiTypography: {
       defaultProps: {
         sx: {
+          margin: 0,
           textWrap: 'wrap',
+        },
+      },
+      styleOverrides: {
+        h1: {},
+        h2: {},
+        h3: {},
+        h4: {},
+        h5: {},
+        h6: {},
+        body1: {},
+        body2: {
+          fontSize: '14px',
+          color: AppColor.caption,
+        },
+        caption: {},
+        paragraph: {},
+        subtitle1: {},
+        subtitle2: {},
+      },
+    },
+    MuiDivider: {
+      defaultProps: {
+        variant: 'fullWidth',
+        sx: {
+          width: '100%',
         },
       },
     },
@@ -27,7 +54,8 @@ const theme = createTheme({
       defaultProps: {
         variant: 'contained',
         sx: {
-          maxWidth: 'fit-content',
+          textTransform: 'none',
+          borderRadius: AppStyleVariable.borderRadius.small,
         },
       },
       variants: [
@@ -51,11 +79,6 @@ const theme = createTheme({
           },
         },
       ],
-      styleOverrides: {
-        root: {
-          textTransform: 'none',
-        },
-      },
     },
   },
 });

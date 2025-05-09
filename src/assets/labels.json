@@ -1,7 +1,17 @@
 {
-    "Forms": {
-        "SignIn": "Sign In Form",
-        "SignUp": "Sign Up Form",
+    "Form": {
+        "SignIn": {
+            "Title": "Sign In with Your Account",
+            "Description": "If you are already a member, you can sign in with your email and password.",
+            "NotHaveAccount": "Don't have an account?",
+            "SignUpHere": "Sign up here"
+        },
+        "SignUp": {
+            "Title": "Create an Account",
+            "Description": "If you are new to our platform, please create an account.",
+            "AlreadyHaveAccount": "Already have an account?",
+            "SignInHere": "Sign in here"
+        },
         "CreateOrganization": "Create Organization",
         "UpdateOrganization": "Update Organization"
     },
@@ -71,9 +81,22 @@
         "CreateFirstOrganization": "Let's create your very first organization, %s."
     },
     "Sidebar": {
-        "OrganizationInfo": "Organization Info",
-        "MembersInfo": "Members",
-        "DesignProjects": "Design Projects"
+        "OrganizationSwitcherSection": {
+            "Header": "Current Organization"
+        },
+        "DesignProjectsSection": {
+            "Header": "Projects",
+            "DesignProjects": "Design Projects"
+        },
+        "OrganizationManagementSection": {
+            "Header": "Organization Management",
+            "Members": "Members",
+            "Settings": "Settings"
+        },
+        "UserSection": {
+            "Header": "User Management",
+            "Invitations": "Invitations"
+        }
     },
     "Modal": {
         "DeleteOrganization": "Delete Organization",

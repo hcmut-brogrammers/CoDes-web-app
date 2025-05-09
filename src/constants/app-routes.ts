@@ -1,27 +1,21 @@
 export const RoutePath = {
   SignIn: () => '/sign-in',
   SignUp: () => '/sign-up',
-  Dashboard: () => '/dashboard',
   Canvas: () => `/canvas`,
-  Organization: () => `${RoutePath.Dashboard()}/organizations/:organizationId`,
-  OrganizationInfo: () => `${RoutePath.Organization()}/info`,
-  MembersInfo: () => `${RoutePath.Organization()}/members`,
-  DesignProjects: () => `${RoutePath.Organization()}/design-projects`,
+  Dashboard: () => '/dashboard',
+  OrganizationInfo: () => `${RoutePath.Dashboard()}/organization/info`,
+  MembersInfo: () => `${RoutePath.Dashboard()}/organization/members`,
+  DesignProjects: () => `${RoutePath.Dashboard()}`,
 };
 
 export const AppRoute = {
   SignIn: () => '/sign-in',
   SignUp: () => '/sign-up',
-  Dashboard: () => '/dashboard',
   Canvas: () => `/canvas`,
-  Organization: (organizationId: string) =>
-    `${AppRoute.Dashboard()}/organizations/${organizationId}`,
-  OrganizationInfo: (organizationId: string) =>
-    `${AppRoute.Organization(organizationId)}/info`,
-  MembersInfo: (organizationId: string) =>
-    `${AppRoute.Organization(organizationId)}/members`,
-  DesignProjects: (organizationId: string) =>
-    `${AppRoute.Organization(organizationId)}/design-projects`,
+  Dashboard: () => '/dashboard',
+  OrganizationInfo: () => `${AppRoute.Dashboard()}/organization/info`,
+  MembersInfo: () => `${AppRoute.Dashboard()}/organization/members`,
+  DesignProjects: () => `${AppRoute.Dashboard()}`,
   DesignProjectCanvas: (designProjectId: string) =>
     `${AppRoute.Canvas()}?designProjectId=${designProjectId}`,
 };

@@ -5,15 +5,21 @@ import TextField from '@mui/material/TextField';
 import { useFormik } from 'formik';
 
 import { Labels } from '@/assets';
-import ListDesignProject from '@/components/ListDesignProject/ListDesignProject';
+import ActionButton from '@/components/ActionButton';
+import ListDesignProject from '@/components/ListDesignProject';
+import PageContainer from '@/components/PageContainer';
 import Modal from '@/components/ui/Modal';
+import Row from '@/components/ui/Row';
+import { useCreateStyles } from '@/hooks/use-app-style';
 import useCreateDesignProject from '@/hooks/use-create-design-project';
 import useFetchDesignProjects from '@/hooks/use-fetch-design-projects';
 import useModal from '@/hooks/use-modal';
 import useAuthStore from '@/stores/auth-store';
+import { FunctionCreateStyles } from '@/types/style';
 import { CreateDesignProjectFormSchema } from '@/utils/schemas';
 
 const DesignProjectsPage: FC = () => {
+  const styles = useCreateStyles(createStyles);
   const { checkIfIsOrganizationAdmin } = useAuthStore();
   const { data: designProjectsData, isFetched: isDesignProjectsDataFetched } =
     useFetchDesignProjects();
@@ -23,15 +29,17 @@ const DesignProjectsPage: FC = () => {
     !designProjectsData || !isDesignProjectsDataFetched;
 
   return (
-    <Box>
-      {isOrganizationAdmin && <CreateDesignProjectButton />}
-      <Box sx={{ padding: '16px' }}>
+    <PageContainer>
+      <Row justifyContent="flex-end">
+        {isOrganizationAdmin && <CreateDesignProjectButton />}
+      </Row>
+      <Box sx={styles.listDesignProjectContainer}>
         <ListDesignProject
           isLoading={isDesignProjectsDataFetching}
           designProjects={designProjectsData!}
         />
       </Box>
-    </Box>
+    </PageContainer>
   );
 };
 
@@ -40,6 +48,7 @@ interface IForm {
 }
 
 const CreateDesignProjectButton: FC = () => {
+  const styles = useCreateStyles(createStyles);
   const { mutateAsync: createDesignProjectAsync } = useCreateDesignProject();
   const {
     open: openModal,
@@ -66,11 +75,7 @@ const CreateDesignProjectButton: FC = () => {
 
   return (
     <>
-      <Button
-        variant="contained"
-        onClick={handleOpenModal}
-        sx={{ alignSelf: 'flex-end' }}
-      >
+      <Button variant="contained" onClick={handleOpenModal} sx={styles.button}>
         {Labels.Actions.CreateDesignProject}
       </Button>
       <Modal
@@ -94,18 +99,29 @@ const CreateDesignProjectButton: FC = () => {
               formik.setValues({ ...formik.values, name: e.target.value })
             }
           />
-          <Button
+          <ActionButton
             type="submit"
             loading={isLoading}
             disabled={!canSend}
             sx={{ marginTop: '8px' }}
           >
             {Labels.Actions.Create}
-          </Button>
+          </ActionButton>
         </Box>
       </Modal>
     </>
   );
+};
+
+const createStyles: FunctionCreateStyles = () => {
+  return {
+    button: {
+      textTransform: 'none',
+    },
+    listDesignProjectContainer: {
+      marginTop: '16px',
+    },
+  };
 };
 
 export default DesignProjectsPage;

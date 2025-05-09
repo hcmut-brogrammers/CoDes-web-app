@@ -8,6 +8,8 @@ declare module '@mui/material/styles' {
     selected: string;
     border: string;
     red: string;
+    caption: string;
+    active: string;
   }
 
   interface Palette extends IExtendedPalette {}
