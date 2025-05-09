@@ -1,150 +1,92 @@
-import { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Typography } from '@mui/material';
+import { FC, useState } from 'react';
 import Box from '@mui/material/Box';
-import MenuItem, { MenuItemProps } from '@mui/material/MenuItem';
-import MenuList from '@mui/material/MenuList';
-import { SxProps } from '@mui/material/styles';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import ListSubheader from '@mui/material/ListSubheader';
 
 import { Labels } from '@/assets';
-import { AppRoute } from '@/constants/app-routes';
-import { useCreateStyles } from '@/hooks/use-app-style';
-import useGlobalStore from '@/stores/global-store';
-import { FunctionCreateStyles } from '@/types/style';
 
-import Column from '../ui/Column';
-import {
-  ApartmentRoundedIcon,
-  BrushRoundedIcon,
-  GroupRoundedIcon,
-} from '../ui/Icons';
+import { ChevronLeftRoundedIcon, ViewSidebarRoundedIcon } from '../ui/Icons';
+import StyledList from '../ui/StyledList';
 
-import InvitationNotiMenu from './InvitationNotiMenu';
-import OrganizationSelect from './OrganizationSelect';
-import UserAvatar from './UserAvatar';
+import OrganizationInfo from './OrganizationInfo/OrganizationInfo';
+import OrganizationSwitcher from './OrganizationSwitcher/OrganizationSwitcher';
+import UserInvitations from './UserInvitations/UserInvitations';
+import UserSettings from './UserSettings/UserAvatar';
+import DesignProjects from './DesignProjects';
+import MembersInfo from './Members';
+import SidebarDrawer, { DrawerHeader } from './SidebarDrawer';
 
 const Sidebar: FC = () => {
-  const styles = useCreateStyles(createStyles);
-  return (
-    <Column sx={styles.container}>
-      <InvitationsNoti />
-      <OrganizationSection />
-      <Box sx={{ flex: 1 }}></Box>
-      <MenuList>
-        <DesignProjects />
-        <MembersInfo />
-        <OrganizationInfo />
-      </MenuList>
-      <UserSection />
-    </Column>
-  );
-};
+  const [open, setOpen] = useState(false);
 
-const InvitationsNoti: FC = () => {
-  const styles = useCreateStyles(createStyles);
-  return (
-    <Column sx={styles.notiSection}>
-      <InvitationNotiMenu />
-    </Column>
-  );
-};
-
-const OrganizationSection: FC = () => {
-  const styles = useCreateStyles(createStyles);
-  return (
-    <Column sx={styles.organizationSection}>
-      <OrganizationSelect />
-    </Column>
-  );
-};
-
-const UserSection: FC = () => {
-  const styles = useCreateStyles(createStyles);
-  return (
-    <Column sx={styles.userAvatarContainer}>
-      <UserAvatar />
-    </Column>
-  );
-};
-
-const DesignProjects: FC = () => {
-  const { currentOrganizationId } = useGlobalStore();
-  const navigate = useNavigate();
-  const handleClick = () => {
-    navigate(AppRoute.DesignProjects(currentOrganizationId));
-  };
-  return (
-    <StyledMenuItem onClick={handleClick}>
-      <BrushRoundedIcon />
-      <Typography>{Labels.Sidebar.DesignProjects}</Typography>
-    </StyledMenuItem>
-  );
-};
-
-const MembersInfo: FC = () => {
-  const { currentOrganizationId } = useGlobalStore();
-  const navigate = useNavigate();
-  const handleClick = () => {
-    navigate(AppRoute.MembersInfo(currentOrganizationId));
-  };
-  return (
-    <StyledMenuItem onClick={handleClick}>
-      <GroupRoundedIcon />
-      <Typography>{Labels.Sidebar.MembersInfo}</Typography>
-    </StyledMenuItem>
-  );
-};
-
-const OrganizationInfo: FC = () => {
-  const { currentOrganizationId } = useGlobalStore();
-  const navigate = useNavigate();
-  const handleClick = () => {
-    navigate(AppRoute.OrganizationInfo(currentOrganizationId));
+  const handleToggleDrawer = () => {
+    setOpen((prevOpen) => !prevOpen);
   };
 
+  const icon = open ? <ChevronLeftRoundedIcon /> : <ViewSidebarRoundedIcon />;
+
   return (
-    <StyledMenuItem onClick={handleClick}>
-      <ApartmentRoundedIcon />
-      <Typography>{Labels.Sidebar.OrganizationInfo}</Typography>
-    </StyledMenuItem>
+    <SidebarDrawer variant="permanent" open={open}>
+      <DrawerHeader>
+        <IconButton onClick={handleToggleDrawer}>{icon}</IconButton>
+      </DrawerHeader>
+      <Divider />
+      <StyledList
+        subheader={
+          open && (
+            <ListSubheader component="div">
+              {Labels.Sidebar.OrganizationSwitcherSection.Header}
+            </ListSubheader>
+          )
+        }
+      >
+        <OrganizationSwitcher open={open} />
+      </StyledList>
+      <Divider />
+      <StyledList
+        subheader={
+          open && (
+            <ListSubheader component="div">
+              {Labels.Sidebar.DesignProjectsSection.Header}
+            </ListSubheader>
+          )
+        }
+      >
+        <DesignProjects open={open} />
+      </StyledList>
+      <Divider />
+      <StyledList
+        subheader={
+          open && (
+            <ListSubheader component="div">
+              {Labels.Sidebar.OrganizationManagementSection.Header}
+            </ListSubheader>
+          )
+        }
+      >
+        <MembersInfo open={open} />
+        <OrganizationInfo open={open} />
+      </StyledList>
+      <Divider />
+      <StyledList
+        subheader={
+          open && (
+            <ListSubheader component="div">
+              {Labels.Sidebar.UserSection.Header}
+            </ListSubheader>
+          )
+        }
+      >
+        <UserInvitations open={open} />
+      </StyledList>
+      <Box sx={{ flex: 1 }} />
+      <Divider />
+      <StyledList>
+        <UserSettings open={open} />
+      </StyledList>
+    </SidebarDrawer>
   );
-};
-
-const StyledMenuItem: FC<MenuItemProps> = ({ ...props }) => {
-  const styles = useCreateStyles(createStyles);
-  return <MenuItem {...props} sx={styles.menuItem}></MenuItem>;
-};
-
-const createStyles: FunctionCreateStyles = (theme) => {
-  const border = `1px solid ${theme.palette.border}`;
-  const sectionStyles: SxProps = {
-    padding: '8px',
-  };
-  return {
-    container: {
-      border,
-      height: '100%',
-      width: '250px',
-    },
-    notiSection: {
-      ...sectionStyles,
-    },
-    organizationSection: {
-      ...sectionStyles,
-      alignItems: 'flex-start',
-      width: '100%',
-      borderBottom: border,
-    },
-    userAvatarContainer: {
-      ...sectionStyles,
-      borderTop: border,
-    },
-
-    menuItem: {
-      padding: '8px',
-      gap: '8px',
-    },
-  };
 };
 
 export default Sidebar;

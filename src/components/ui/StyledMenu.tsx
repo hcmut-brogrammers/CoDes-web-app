@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { MenuListProps } from '@mui/material';
+import { MenuListProps, PaperProps } from '@mui/material';
 import Menu, { MenuProps } from '@mui/material/Menu';
 import MenuItem, { MenuItemProps } from '@mui/material/MenuItem';
 
@@ -10,7 +10,7 @@ import {
 import { AppStyleVariable } from '@/styles';
 import { mergeSx } from '@/styles/helper';
 import {
-  FunctionCreateConditionalStyle,
+  FunctionCreateConditionalStyles,
   FunctionCreateStyles,
 } from '@/types/style';
 
@@ -26,6 +26,9 @@ const StyledMenu: FC<IProps> = ({ children, slotProps, ...props }) => {
         list: {
           ...slotProps?.list,
           sx: mergeSx(styles.menuList, (slotProps?.list as MenuListProps)?.sx),
+        },
+        paper: {
+          sx: mergeSx(styles.menuPaper, (slotProps?.paper as PaperProps)?.sx),
         },
       }}
     >
@@ -62,10 +65,13 @@ const createStyles: FunctionCreateStyles = () => {
       flexDirection: 'column',
       gap: '8px',
     },
+    menuPaper: {
+      minWidth: '250px',
+    },
   };
 };
 
-const createConditionalStyles: FunctionCreateConditionalStyle = (theme) => {
+const createConditionalStyles: FunctionCreateConditionalStyles = (theme) => {
   return {
     menuItem: ({ isSelected }) => ({
       width: '100%',

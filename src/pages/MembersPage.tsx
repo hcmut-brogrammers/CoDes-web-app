@@ -17,9 +17,11 @@ import { vsprintf } from 'sprintf-js';
 import { useDebounceValue } from 'usehooks-ts';
 
 import { Labels } from '@/assets';
-import Column from '@/components/ui/Column';
+import ActionButton from '@/components/ActionButton';
+import PageContainer from '@/components/PageContainer';
 import { PersonOutlineRoundedIcon } from '@/components/ui/Icons';
 import Modal from '@/components/ui/Modal';
+import Row from '@/components/ui/Row';
 import { useCreateStyles } from '@/hooks/use-app-style';
 import useAutocomplete from '@/hooks/use-autocomplete';
 import useCreateInvitations from '@/hooks/use-create-invitations';
@@ -37,17 +39,19 @@ import { CreateInvitationsFormSchema } from '@/utils/schemas';
 
 const MembersPage: FC = () => {
   return (
-    <Box sx={{ padding: '16px' }}>
-      <Column>
+    <PageContainer>
+      <Row justifyContent="flex-end">
         <AddMemberButton />
-        <ListMembers />
-      </Column>
-    </Box>
+      </Row>
+      <Box>
+        <MembersTable />
+      </Box>
+    </PageContainer>
   );
 };
 export default MembersPage;
 
-const ListMembers: FC = () => {
+const MembersTable: FC = () => {
   const { tokenData } = useAuthStore();
   const {
     data: organizationMembersData,
@@ -61,7 +65,7 @@ const ListMembers: FC = () => {
     tokenData?.user_id !== member.member_id;
 
   return (
-    <Box>
+    <Box sx={{ width: '100%', marginTop: '16px' }}>
       {isLoading ? (
         <CircularProgress />
       ) : (
@@ -165,13 +169,9 @@ const AddMemberButton: FC = () => {
 
   return (
     <>
-      <Button
-        variant="contained"
-        onClick={handleOpenModal}
-        sx={{ alignSelf: 'flex-end' }}
-      >
+      <ActionButton variant="contained" onClick={handleOpenModal}>
         {Labels.Actions.AddMember}
-      </Button>
+      </ActionButton>
       <Modal
         title={Labels.Modal.AddMember}
         open={openModal}
@@ -181,14 +181,14 @@ const AddMemberButton: FC = () => {
           value={formik.values.users}
           handleChange={handleChange}
         />
-        <Button
+        <ActionButton
           loading={isLoading}
           disabled={!canSend}
           onClick={() => formik.handleSubmit()}
           sx={{ marginTop: '8px' }}
         >
           {Labels.Actions.Send}
-        </Button>
+        </ActionButton>
       </Modal>
     </>
   );

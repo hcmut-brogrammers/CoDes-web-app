@@ -16,7 +16,6 @@ import DashboardPage from './pages/DashboardPage';
 import DesignProjectsPage from './pages/DesignProjectsPage';
 import MembersPage from './pages/MembersPage';
 import OrganizationInfoPage from './pages/OrganizationInfoPage';
-import OrganizationPage from './pages/OrganizationPage';
 import RootPage from './pages/RootPage';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
@@ -56,17 +55,14 @@ const App: FC = () => {
         <Route path={RoutePath.Canvas()} element={<CanvasPage />} />
         <Route path={RoutePath.Dashboard()} element={<DashboardPage />}>
           <Route
-            path={RoutePath.Organization()}
-            element={<OrganizationPage />}
-          />
-          <Route
-            path={RoutePath.OrganizationInfo()}
-            element={<OrganizationInfoPage />}
+            index
+            path={RoutePath.DesignProjects()}
+            element={<DesignProjectsPage />}
           />
           <Route path={RoutePath.MembersInfo()} element={<MembersPage />} />
           <Route
-            path={RoutePath.DesignProjects()}
-            element={<DesignProjectsPage />}
+            path={RoutePath.OrganizationInfo()}
+            element={<OrganizationInfoPage />}
           />
         </Route>
       </Route>

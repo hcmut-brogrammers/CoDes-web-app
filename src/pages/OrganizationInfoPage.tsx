@@ -1,4 +1,3 @@
-import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 
@@ -7,14 +6,12 @@ import Column from '@/components/ui/Column';
 import UpdateOrganizationForm from '@/components/UpdateOrganizationForm';
 import { useCreateStyles } from '@/hooks/use-app-style';
 import useFetchOrganization from '@/hooks/use-fetch-organization';
-import { OrganizationPageParams } from '@/types/page';
 import { FunctionCreateStyles } from '@/types/style';
 
 const OrganizationInfoPage = () => {
-  const { organizationId } = useParams<OrganizationPageParams>();
   const styles = useCreateStyles(createStyles);
   const { data: organizationData, isFetched: isOrganizationDataFetched } =
-    useFetchOrganization({ organizationId: organizationId! });
+    useFetchOrganization();
   const canDelete = !organizationData?.is_default;
 
   return (

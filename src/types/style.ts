@@ -12,6 +12,6 @@ export type ConditionalStyleProps<K extends string = string> = Record<
   K,
   FunctionCreateConditionalStyleItem
 >;
-export type FunctionCreateConditionalStyle = (
+export type FunctionCreateConditionalStyles = (
   theme: IAppTheme,
 ) => ConditionalStyleProps;
