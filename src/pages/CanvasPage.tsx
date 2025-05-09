@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { Layer, Stage, Text } from 'react-konva';
 import { ReadyState } from 'react-use-websocket';
 import Box from '@mui/material/Box';
@@ -71,16 +71,19 @@ const CanvasPage: FC<IProps> = () => {
     sendUpdateElementMessage(element.id, element);
   };
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (tokenData) {
-      sendMoveCursorMessage({
-        user_id: tokenData.user_id,
-        username: tokenData.username,
-        x: e.clientX,
-        y: e.clientY,
-      });
-    }
-  };
+  const handleMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (tokenData) {
+        sendMoveCursorMessage({
+          user_id: tokenData.user_id,
+          username: tokenData.username,
+          x: e.clientX,
+          y: e.clientY,
+        });
+      }
+    },
+    [tokenData, sendMoveCursorMessage],
+  );
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -95,7 +98,7 @@ const CanvasPage: FC<IProps> = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [selectedElementId]);
+  }, [sendDeleteElementMessage, selectedElementId]);
 
   useEffect(() => {
     window.addEventListener('mousemove', handleMouseMove);
@@ -103,14 +106,14 @@ const CanvasPage: FC<IProps> = () => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, []);
+  }, [handleMouseMove]);
 
   // NOTE: fetch design elements data for the first time
   useEffect(() => {
     if (!!designElementsData && isDesignElementsDataFetched) {
       setElements(designElementsData);
     }
-  }, [designElementsData, isDesignElementsDataFetched]);
+  }, [designElementsData, isDesignElementsDataFetched, setElements]);
 
   return (
     <Box>

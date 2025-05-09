@@ -8,11 +8,14 @@ const useNavigateRoute = () => {
   const { setCurrentDesignProjectId } = useGlobalStore();
   const navigate = useNavigate();
 
-  const navigateDesignProjectCanvas = useCallback((designProjectId: string) => {
-    setCurrentDesignProjectId(designProjectId);
-    const url = AppRoute.DesignProjectCanvas(designProjectId);
-    navigate(url);
-  }, []);
+  const navigateDesignProjectCanvas = useCallback(
+    (designProjectId: string) => {
+      setCurrentDesignProjectId(designProjectId);
+      const url = AppRoute.DesignProjectCanvas(designProjectId);
+      navigate(url);
+    },
+    [setCurrentDesignProjectId, navigate],
+  );
 
   return {
     navigateDesignProjectCanvas,

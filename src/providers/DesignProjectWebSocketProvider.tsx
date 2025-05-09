@@ -1,20 +1,9 @@
-// WebSocketContext.tsx
-import {
-  createContext,
-  FC,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-} from 'react';
+import { FC, ReactNode, useCallback, useEffect, useMemo } from 'react';
 import useWebSocket from 'react-use-websocket';
-import {
-  WebSocketHook,
-  WebSocketLike,
-} from 'react-use-websocket/dist/lib/types';
 
 import { Labels } from '@/assets';
 import { appEnv } from '@/constants/app-env';
+import DesignProjectWebSocketContext from '@/contexts/design-project-web-socket-context';
 import useAuthStore from '@/stores/auth-store';
 import useDesignProjectStore from '@/stores/design-project-store';
 import useGlobalStore from '@/stores/global-store';
@@ -50,42 +39,6 @@ import {
   isReceiveUserJoinedProjectMessage,
   isReceiveUserLeftProjectMessage,
 } from '@/utils/websocket';
-
-export const DesignProjectWebSocketContext = createContext<
-  Pick<
-    WebSocketHook,
-    | 'readyState'
-    | 'lastMessage'
-    | 'lastJsonMessage'
-    | 'sendMessage'
-    | 'sendJsonMessage'
-    | 'getWebSocket'
-  > & {
-    webSocket: WebSocketLike | null;
-    sendCreateElementMessage: (
-      temporaryElementId: string,
-      element: DesignElement,
-    ) => void;
-    sendDeleteElementMessage: (elementId: string) => void;
-    sendUpdateElementMessage: (
-      elementId: string,
-      element: DesignElement,
-    ) => void;
-    sendMoveCursorMessage: (userCursor: IUserCursor) => void;
-  }
->({
-  webSocket: null,
-  readyState: 0,
-  lastMessage: null,
-  lastJsonMessage: null,
-  sendMessage: () => {},
-  sendJsonMessage: () => {},
-  getWebSocket: () => null,
-  sendCreateElementMessage: () => {},
-  sendDeleteElementMessage: () => {},
-  sendUpdateElementMessage: () => {},
-  sendMoveCursorMessage: () => {},
-});
 
 interface IProps {
   children: ReactNode;
@@ -166,7 +119,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
         }));
       }
     },
-    [],
+    [updateElement],
   );
 
   const handleElementDeletedMessage = useCallback(
@@ -174,7 +127,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
       const { deleted_element_id } = message.payload;
       removeElement(deleted_element_id);
     },
-    [],
+    [removeElement],
   );
 
   const handleElementUpdatedMessage = useCallback(
@@ -182,7 +135,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
       const { updated_element_id, updated_element } = message.payload;
       updateElement(updated_element_id, () => updated_element);
     },
-    [],
+    [updateElement],
   );
 
   const handleCurrentUsersMessage = useCallback(
@@ -198,7 +151,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
       }));
       addUserCursors(userCursors);
     },
-    [],
+    [addUsers, addUserCursors],
   );
 
   // NOTE: receiver message response handlers
@@ -208,7 +161,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
       const { element } = message.payload;
       addElement(element);
     },
-    [],
+    [addElement],
   );
 
   const handleReceiveElementDeletedMessage = useCallback(
@@ -216,7 +169,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
       const { deleted_element_id } = message.payload;
       removeElement(deleted_element_id);
     },
-    [],
+    [removeElement],
   );
 
   const handleReceiveElementUpdatedMessage = useCallback(
@@ -224,7 +177,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
       const { updated_element_id, updated_element } = message.payload;
       updateElement(updated_element_id, () => updated_element);
     },
-    [],
+    [updateElement],
   );
 
   const handleReceiveUserJoinedProjectMessage = useCallback(
@@ -238,7 +191,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
         y: 0,
       });
     },
-    [],
+    [addUser, addUserCursor],
   );
 
   const handleReceiveUserLeftProjectMessage = useCallback(
@@ -247,7 +200,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
       removeUser(sender.id);
       removeUserCursor(sender.id);
     },
-    [],
+    [removeUser, removeUserCursor],
   );
 
   const handleReceiveUserCursorMovedMessage = useCallback(
@@ -255,7 +208,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
       const { sender_cursor } = message.payload;
       updateUserCursor(sender_cursor.user_id, () => sender_cursor);
     },
-    [],
+    [updateUserCursor],
   );
 
   useEffect(() => {
@@ -306,22 +259,37 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
         handleReceiveUserLeftProjectMessage(lastJsonMessage);
       }
     }
-  }, [lastJsonMessage]);
+  }, [
+    lastJsonMessage,
+    handleElementCreatedMessage,
+    handleElementDeletedMessage,
+    handleElementUpdatedMessage,
+    handleCurrentUsersMessage,
+    handleReceiveElementCreatedMessage,
+    handleReceiveElementDeletedMessage,
+    handleReceiveElementUpdatedMessage,
+    handleReceiveUserJoinedProjectMessage,
+    handleReceiveUserCursorMovedMessage,
+    handleReceiveUserLeftProjectMessage,
+  ]);
 
   // NOTE: sender messsage requests
-  const sendJoinProjectMessage = useCallback((user: ISender) => {
-    const message = createJoinProjectMessage({
-      user_id: user.id,
-    });
-    sendJsonMessage(message);
-    setUsers([user]);
-    addUserCursor({
-      user_id: user.id,
-      username: user.username,
-      x: 0,
-      y: 0,
-    });
-  }, []);
+  const sendJoinProjectMessage = useCallback(
+    (user: ISender) => {
+      const message = createJoinProjectMessage({
+        user_id: user.id,
+      });
+      sendJsonMessage(message);
+      setUsers([user]);
+      addUserCursor({
+        user_id: user.id,
+        username: user.username,
+        x: 0,
+        y: 0,
+      });
+    },
+    [sendJsonMessage, setUsers, addUserCursor],
+  );
 
   const sendCreateElementMessage = useCallback(
     (temporaryElementId: string, element: DesignElement) => {
@@ -332,7 +300,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
       sendJsonMessage(message);
       addElement(element);
     },
-    [],
+    [sendJsonMessage, addElement],
   );
 
   const sendUpdateElementMessage = useCallback(
@@ -344,23 +312,29 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
       sendJsonMessage(message);
       updateElement(elementId, () => element);
     },
-    [],
+    [sendJsonMessage, updateElement],
   );
 
-  const sendDeleteElementMessage = useCallback((elementId: string) => {
-    const message = createDeleteElementMessage({
-      element_id: elementId,
-    });
-    sendJsonMessage(message);
-  }, []);
+  const sendDeleteElementMessage = useCallback(
+    (elementId: string) => {
+      const message = createDeleteElementMessage({
+        element_id: elementId,
+      });
+      sendJsonMessage(message);
+    },
+    [sendJsonMessage],
+  );
 
-  const sendMoveCursorMessage = useCallback((userCursor: IUserCursor) => {
-    const message = createMoveCursorMessage({
-      user_cursor: userCursor,
-    });
-    sendJsonMessage(message);
-    updateUserCursor(userCursor.user_id, () => userCursor);
-  }, []);
+  const sendMoveCursorMessage = useCallback(
+    (userCursor: IUserCursor) => {
+      const message = createMoveCursorMessage({
+        user_cursor: userCursor,
+      });
+      sendJsonMessage(message);
+      updateUserCursor(userCursor.user_id, () => userCursor);
+    },
+    [sendJsonMessage, updateUserCursor],
+  );
 
   const value = useMemo(
     () => ({

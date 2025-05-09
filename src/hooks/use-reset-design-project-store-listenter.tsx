@@ -25,7 +25,7 @@ const useResetDesignProjectStoreListener = () => {
       setCurrentDesignProjectId('');
       resetDesignProjectStore();
     }
-  }, [shouldResetStore]);
+  }, [shouldResetStore, setCurrentDesignProjectId, resetDesignProjectStore]);
 };
 
 export default useResetDesignProjectStoreListener;
