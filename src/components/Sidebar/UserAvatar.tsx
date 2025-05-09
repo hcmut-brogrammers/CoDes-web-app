@@ -9,6 +9,7 @@ import { useCreateStyles } from '@/hooks/use-app-style';
 import useSignOut from '@/hooks/use-sign-out';
 import useAuthStore from '@/stores/auth-store';
 import { AppStylesVariable } from '@/styles/app-style-variable';
+import { mergeSx, uuidToHashedColor } from '@/styles/helper';
 import { FunctionCreateStyles } from '@/types/style';
 
 import Row from '../ui/Row';
@@ -38,7 +39,13 @@ const UserAvatar: FC = () => {
   return (
     <>
       <Row onClick={handleClick} sx={styles.container}>
-        <Box sx={styles.avatar}>{firstLetter}</Box>
+        <Box
+          sx={mergeSx(styles.avatar, {
+            backgroundColor: uuidToHashedColor(tokenData.user_id),
+          })}
+        >
+          {firstLetter}
+        </Box>
         <Typography>{username}</Typography>
       </Row>
       <Menu
@@ -85,7 +92,6 @@ const createStyles: FunctionCreateStyles = (theme) => {
       borderRadius: '50%',
       height: '30px',
       width: '30px',
-      backgroundColor: theme.palette.primary.main,
     },
   };
 };

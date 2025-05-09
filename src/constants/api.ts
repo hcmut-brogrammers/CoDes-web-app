@@ -19,6 +19,8 @@ export const ApiEndpoint = {
   DesignProjects: () => '/design-projects',
   DeleteDesignProject: (designProjectId: string) =>
     `${ApiEndpoint.DesignProjects()}/${designProjectId}`,
+  DesignElements: (designProjectId: string) =>
+    `${ApiEndpoint.DesignProjects()}/${designProjectId}/elements`,
 };
 
 export enum RequestMethod {

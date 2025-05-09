@@ -36,4 +36,7 @@ export const CreateDesignProjectFormSchema = Yup.object({
 
 export const AppEnvSchema = Yup.object({
   ApiBaseUrl: Yup.string().required(Labels.FieldValidation.ApiUrlRequired),
+  WebSocketUrl: Yup.string().required(
+    Labels.FieldValidation.WebSocketUrlRequired,
+  ),
 });
