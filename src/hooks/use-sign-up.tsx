@@ -25,6 +25,7 @@ const useSignUp = () => {
     },
     onError: (error) => {
       console.error(Labels.Console.Error.SignUp, error);
+      throw error;
     },
   });
 };

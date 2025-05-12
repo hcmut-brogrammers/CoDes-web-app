@@ -18,7 +18,7 @@ const ListDesignProject: FC<IProps> = ({ designProjects, isLoading }) => {
       <Grid container spacing={2} sx={{ flex: 1 }}>
         {isLoading ? (
           <>
-            {[...Array(9).keys()].map((value) => (
+            {[...Array(8).keys()].map((value) => (
               <GridItem key={value}>
                 <DesignProjectSkeleton />
               </GridItem>
@@ -38,7 +38,7 @@ const ListDesignProject: FC<IProps> = ({ designProjects, isLoading }) => {
 
 const GridItem: FC<GridProps> = ({ children, ...props }) => {
   return (
-    <Grid size={{ xs: 12, sm: 6, md: 4 }} {...props}>
+    <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} {...props}>
       {children}
     </Grid>
   );

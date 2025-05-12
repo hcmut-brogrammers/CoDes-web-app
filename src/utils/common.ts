@@ -17,3 +17,9 @@ export const chunkArray = <T>(array: T[], size: number): T[][] => {
   }
   return result;
 };
+
+// current datetime
+export const getCurrentDateTime = () => {
+  const now = new Date();
+  return now.toISOString();
+};

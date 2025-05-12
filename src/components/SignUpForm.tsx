@@ -1,4 +1,4 @@
-import { ChangeEvent, FC } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -17,6 +17,7 @@ import { SignUpFormSchema } from '@/utils/schemas';
 
 import Column from './ui/Column';
 import EmailInput from './ui/EmailInput';
+import ErrorHelperText from './ui/ErrorHelperText';
 import PasswordInput from './ui/PasswordInput';
 import Row from './ui/Row';
 import UsernameInput from './ui/UsernameInput';
@@ -24,8 +25,14 @@ import UsernameInput from './ui/UsernameInput';
 const SignUpForm: FC = () => {
   const styles = useCreateStyles(createStyles);
   const { mutateAsync: signUpAsync } = useSignUp();
+  const [error, setError] = useState('');
   const handleSubmit = async (values: ISignUpForm) => {
-    await signUpAsync(values);
+    try {
+      setError('');
+      await signUpAsync(values);
+    } catch {
+      setError(Labels.Error.InvalidEmail);
+    }
   };
   const formik = useFormik<ISignUpForm>({
     initialValues: initializeSignUpForm(),
@@ -41,8 +48,6 @@ const SignUpForm: FC = () => {
       formik.setValues({ ...formik.values, [key]: e.target.value });
     };
 
-  const showConfirmPasswordError =
-    !!formik.errors.confirmPassword && Boolean(formik.touched.confirmPassword);
   const canSubmit =
     !Object.values(formik.errors).length && !formik.isSubmitting;
   return (
@@ -89,11 +94,11 @@ const SignUpForm: FC = () => {
               placeholder: Labels.InputPlaceholder.EnterConfirmPassword,
               disabled: formik.isSubmitting,
               label: Labels.InputFields.ConfirmPassword,
-              error: showConfirmPasswordError,
               value: confirmPassword,
               onChange: handleChangeField('confirmPassword'),
             }}
           />
+          <ErrorHelperText error={error} />
         </Column>
         <Divider />
         <Button

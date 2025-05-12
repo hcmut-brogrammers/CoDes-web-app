@@ -18,10 +18,22 @@ export enum InviteeAction {
 export enum ShapeType {
   Rectangle = 'Rectangle',
   Circle = 'Circle',
+  Line = 'Line',
+  Ellipse = 'Ellipse',
+  Arrow = 'Arrow',
+  Text = 'Text',
+  Ring = 'Ring',
+  Star = 'Star',
+  RegularPolygon = 'RegularPolygon',
+  Image = 'Image',
 }
 
 export enum Keyboard {
   Backspace = 'Backspace',
+  ArrowUp = 'ArrowUp',
+  ArrowDown = 'ArrowDown',
+  Enter = 'Enter',
+  Delete = 'Delete',
 }
 
 export enum WebSocketEvent {
@@ -31,18 +43,22 @@ export enum WebSocketEvent {
   CreateElement = 'CreateElement',
   DeleteElement = 'DeleteElement',
   UpdateElement = 'UpdateElement',
-  JoinProject = 'JoinProject',
-  MoveCursor = 'MoveCursor',
+  JoinUserCursor = 'JoinUserCursor',
+  UpdateUserCursor = 'UpdateUserCursor',
   // NOTE: sender response events
   ElementCreated = 'ElementCreated',
   ElementDeleted = 'ElementDeleted',
-  ElementUpdated = 'ElementUpdated',
   CurrentUsers = 'CurrentUsers',
   // NOTE: receiver events
   ReceiveElementCreated = 'ReceiveElementCreated',
   ReceiveElementDeleted = 'ReceiveElementDeleted',
   ReceiveElementUpdated = 'ReceiveElementUpdated',
-  ReceiveUserJoinedProject = 'ReceiveUserJoinedProject',
-  ReceiveUserLeftProject = 'ReceiveUserLeftProject',
-  ReceiveUserCursorMoved = 'ReceiveUserCursorMoved',
+  ReceiveUserCursorJoined = 'ReceiveUserCursorJoined',
+  ReceiveUserCursorLeft = 'ReceiveUserCursorLeft',
+  ReceiveUserCursorUpdated = 'ReceiveUserCursorUpdated',
+}
+
+export enum CursorStatus {
+  Online = 'Online',
+  Offline = 'Offline',
 }

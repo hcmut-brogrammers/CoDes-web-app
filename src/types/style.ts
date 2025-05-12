@@ -6,7 +6,7 @@ export type StyleProps = Record<string, SxProps>;
 export type FunctionCreateStyles = (theme: IAppTheme) => StyleProps;
 
 export type FunctionCreateConditionalStyleItem<
-  C = Record<string, Undefinable<boolean>>,
+  C extends Record<string, Nilable<boolean>> = Record<string, Nilable<boolean>>,
 > = (condition: C) => SxProps;
 export type ConditionalStyleProps<K extends string = string> = Record<
   K,

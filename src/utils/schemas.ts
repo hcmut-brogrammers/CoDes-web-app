@@ -4,12 +4,17 @@ import { Labels } from '@/assets';
 
 export const SignInFormSchema = Yup.object({
   email: Yup.string().email().required(Labels.FieldValidation.EmailRequired),
-  password: Yup.string().required(Labels.FieldValidation.PasswordRequired),
+  password: Yup.string()
+    .required(Labels.FieldValidation.PasswordRequired)
+    .min(8, Labels.FieldValidation.PasswordMinLength),
 });
 
 export const SignUpFormSchema = SignInFormSchema.concat(
   Yup.object({
     username: Yup.string().required(Labels.FieldValidation.UsernameRequired),
+    confirmPassword: Yup.string()
+      .required(Labels.FieldValidation.ConfirmPasswordRequired)
+      .oneOf([Yup.ref('password')], Labels.FieldValidation.PasswordMisatch),
   }),
 );
 

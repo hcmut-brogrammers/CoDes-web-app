@@ -122,7 +122,7 @@ class ApiClient {
     return true;
   }
 
-  private _interceptResponse(response: Response) {
+  private async _interceptResponse(response: Response) {
     const status = response.status;
     if (status === ResponseStatus.Unauthorized) {
       console.error(Labels.Console.Error.Unauthorized);
@@ -149,7 +149,7 @@ class ApiClient {
         retriesLeft - 1,
       );
     }
-    this._interceptResponse(response);
+    await this._interceptResponse(response);
 
     if (!response.ok) {
       throw new Error(vsprintf(Labels.Error.HttpError, [response.status]));

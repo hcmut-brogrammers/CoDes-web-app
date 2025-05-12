@@ -1,19 +1,18 @@
-import Drawer from '@mui/material/Drawer';
+import Drawer, { DrawerProps } from '@mui/material/Drawer';
 import { CSSObject, styled, Theme } from '@mui/material/styles';
 
+import { AppStyleVariable } from '@/styles';
+import { CommonSelector } from '@/styles/app-style-variable';
+
+const drawerWidth = 260;
+
 const openedMixin = (theme: Theme): CSSObject => ({
+  ...AppStyleVariable.transition.open({ theme, props: ['width'] }),
   width: drawerWidth,
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
   overflowX: 'hidden',
 });
 const closedMixin = (theme: Theme): CSSObject => ({
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
+  ...AppStyleVariable.transition.close({ theme, props: ['width'] }),
   overflowX: 'hidden',
   width: `calc(${theme.spacing(7)} + 1px)`,
   [theme.breakpoints.up('sm')]: {
@@ -21,11 +20,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
   },
 });
 
-const drawerWidth = 260;
-
 const SidebarDrawer = styled(Drawer, {
   shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme }) => ({
+})<DrawerProps>(({ theme }) => ({
   width: drawerWidth,
   flexShrink: 0,
   whiteSpace: 'nowrap',
@@ -35,14 +32,14 @@ const SidebarDrawer = styled(Drawer, {
       props: ({ open }) => open,
       style: {
         ...openedMixin(theme),
-        '& .MuiDrawer-paper': openedMixin(theme),
+        [CommonSelector.Paper]: openedMixin(theme),
       },
     },
     {
       props: ({ open }) => !open,
       style: {
         ...closedMixin(theme),
-        '& .MuiDrawer-paper': closedMixin(theme),
+        [CommonSelector.Paper]: closedMixin(theme),
       },
     },
   ],
