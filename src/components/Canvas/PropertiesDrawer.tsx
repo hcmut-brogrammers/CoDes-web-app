@@ -200,7 +200,9 @@ const ColorTextField: FC<
   const [draftColor, setDraftColor] = useState(value);
 
   const handleBlur = () => {
-    onChange(draftColor);
+    if (value !== draftColor) {
+      onChange(draftColor);
+    }
   };
 
   const handleChangeColor = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -222,7 +224,7 @@ const ColorTextField: FC<
     if (draftColor !== value) {
       setDraftColor(value);
     }
-  }, [setDraftColor, draftColor, value]);
+  }, [value]);
 
   return (
     <TextField
@@ -292,7 +294,9 @@ const NumericTextField: FC<
   };
 
   const handleBlur = () => {
-    onChange(draftValue);
+    if (draftValue !== value) {
+      onChange(draftValue);
+    }
   };
 
   const handleChange = (
@@ -308,7 +312,7 @@ const NumericTextField: FC<
     if (draftValue !== value) {
       setDraftValue(value);
     }
-  }, [value, draftValue, setDraftValue]);
+  }, [value]);
 
   return (
     <TextField

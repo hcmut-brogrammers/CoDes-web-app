@@ -22,7 +22,6 @@ import {
   IReceiveUserCursorUpdatedMessage,
   ISender,
   IUpdateElementMessage,
-  IUpdateUserCursorMessage,
   IUserCursor,
 } from '@/types/websocket';
 import { getCurrentDateTime } from '@/utils/common';
@@ -47,7 +46,7 @@ interface IProps {
   children: ReactNode;
 }
 
-const DEBOUNCE_DELAY_IN_MS = 200;
+const DEBOUNCE_DELAY_IN_MS = 50;
 const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
   const {
     updateElement,
@@ -106,13 +105,6 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
 
   const debouncedSendUpdateElementJsonMessage = useDebounceCallback(
     (message: IUpdateElementMessage) => {
-      sendJsonMessage(message);
-    },
-    DEBOUNCE_DELAY_IN_MS,
-  );
-
-  const debouncedSendUpdateUserCursorJsonMessage = useDebounceCallback(
-    (message: IUpdateUserCursorMessage) => {
       sendJsonMessage(message);
     },
     DEBOUNCE_DELAY_IN_MS,
@@ -348,7 +340,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
         user_cursor: userCursor,
       });
       updateUserCursor(userCursor.user_id, () => userCursor);
-      debouncedSendUpdateUserCursorJsonMessage(message);
+      sendJsonMessage(message);
     },
     [updateUserCursor],
   );
