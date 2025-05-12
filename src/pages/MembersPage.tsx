@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import Chip, { ChipProps } from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
 import Paper from '@mui/material/Paper';
+import Skeleton from '@mui/material/Skeleton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -67,7 +68,7 @@ const MembersTable: FC = () => {
   return (
     <Box sx={{ width: '100%', marginTop: '16px' }}>
       {isLoading ? (
-        <CircularProgress />
+        <Skeleton height={600} />
       ) : (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">

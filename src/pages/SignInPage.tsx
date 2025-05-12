@@ -1,9 +1,10 @@
 import { FC } from 'react';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 
 import SignInForm from '@/components/SignInForm';
+import CodesLogo from '@/components/ui/CodesLogo';
 import Column from '@/components/ui/Column';
+import ComputerHeroBanner from '@/components/ui/ComputerHeroBanner';
 import Row from '@/components/ui/Row';
 import { useCreateStyles } from '@/hooks/use-app-style';
 import { FunctionCreateStyles } from '@/types/style';
@@ -13,16 +14,17 @@ const SignInPage: FC = () => {
   return (
     <Row sx={styles.page}>
       <Box sx={styles.heroBanner}>
-        <Typography>Logo</Typography>
+        <ComputerHeroBanner />
       </Box>
-      <Column sx={styles.form}>
+      <Column gap={4} sx={styles.form}>
+        <CodesLogo width={100} />
         <SignInForm />
       </Column>
     </Row>
   );
 };
 
-const createStyles: FunctionCreateStyles = (theme) => {
+const createStyles: FunctionCreateStyles = () => {
   return {
     page: {
       height: '100%',
@@ -31,7 +33,6 @@ const createStyles: FunctionCreateStyles = (theme) => {
     heroBanner: {
       height: '100%',
       flex: 1,
-      backgroundColor: theme.palette.hover,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',

@@ -25,6 +25,16 @@ export const DesignProjectQuery = {
       designProjects,
     );
   },
+  getDesignProject: (designProjectId: string) => {
+    const designProjects = DesignProjectQuery.getDesignProjects();
+    if (!designProjects) return null;
+    const designProject = designProjects.find(
+      (designProject) => designProject.id === designProjectId,
+    );
+    if (!designProject) return null;
+
+    return designProject;
+  },
   addDesignProject: (designProject: IDesignProject) => {
     const designProjects = DesignProjectQuery.getDesignProjects();
     if (!designProjects) return;

@@ -1,62 +1,112 @@
-import { FC, useCallback, useEffect, useState } from 'react';
-import { Layer, Stage, Text } from 'react-konva';
-import { ReadyState } from 'react-use-websocket';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
+import { Layer, Stage } from 'react-konva';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Konva from 'konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Shape, ShapeConfig } from 'konva/lib/Shape';
+import { Vector2d } from 'konva/lib/types';
 
+import { PropertiesDrawer } from '@/components/Canvas';
+import ElementInspectDrawer from '@/components/Canvas/ElementInspectDrawer';
 import DesignToolbar from '@/components/DesignToolbar/DesignToolbar';
 import Element from '@/components/Element';
-import { Keyboard } from '@/constants/enum';
+import UserCursor from '@/components/UserCursor';
+import useAutoHighlightOtherSelectedElements from '@/hooks/use-auto-highlight-other-selected-elements';
+import useAutoTrackCursor from '@/hooks/use-auto-track-cursor';
 import useDesignProjectWebSocket from '@/hooks/use-design-project-websocket';
 import useFetchDesignElements from '@/hooks/use-fetch-design-elements';
 import useAuthStore from '@/stores/auth-store';
 import useDesignProjectStore from '@/stores/design-project-store';
-import { uuidToHashedColor } from '@/styles/helper';
 import { DesignElement } from '@/types/design-element';
 import { IUserCursor } from '@/types/websocket';
 
 interface IProps {}
 
-const connectionStatuses = {
-  [ReadyState.CONNECTING]: 'Connecting',
-  [ReadyState.OPEN]: 'Open',
-  [ReadyState.CLOSING]: 'Closing',
-  [ReadyState.CLOSED]: 'Closed',
-  [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-};
-
-const getConnectionStatus = (readyState: ReadyState) =>
-  connectionStatuses[readyState] || 'Unknown';
-
 const CanvasPage: FC<IProps> = () => {
+  useAutoTrackCursor();
   const { tokenData } = useAuthStore();
   const { data: designElementsData, isFetched: isDesignElementsDataFetched } =
     useFetchDesignElements();
-  const { userCursors, users, elements, setElements } = useDesignProjectStore();
   const {
-    readyState,
-    sendDeleteElementMessage,
-    sendUpdateElementMessage,
-    sendMoveCursorMessage,
-  } = useDesignProjectWebSocket();
+    userCursors,
+    elements,
+    setElements,
+    getMyUserCursor,
+    getMySelectedElementId,
+  } = useDesignProjectStore();
+  const { sendUpdateElementMessage, sendUpdateUserCursorMessage } =
+    useDesignProjectWebSocket();
+  const [stageScale, setStageScale] = useState<number>(0.9);
+  const [stagePosition, setStagePosition] = useState<Vector2d>({ x: 0, y: 0 });
+  const stageRef = useRef<Nullable<Konva.Stage>>(null);
+  const layerRef = useRef<Nullable<Konva.Layer>>(null);
+  useAutoHighlightOtherSelectedElements({ stageRef, layerRef });
 
-  const [selectedElementId, setSelectedElementId] =
-    useState<Nullable<string>>(null);
+  const sortedElements = useMemo(
+    () =>
+      [...elements].sort((a, b) => {
+        const aCreatedAt = new Date(a.created_at).getTime();
+        const bCreatedAt = new Date(b.created_at).getTime();
 
+        return bCreatedAt - aCreatedAt;
+      }),
+    [elements],
+  );
+  const selectedElementId = getMySelectedElementId();
+  const userCursor = getMyUserCursor();
   const otherUserCursors = userCursors.filter(
     (userCursor) => userCursor.user_id !== tokenData?.user_id,
   );
 
-  const handleSelect = (elementId: string) => {
-    setSelectedElementId(elementId);
+  const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
+    e.evt.preventDefault();
+
+    const scaleBy = 1.05;
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const oldScale = stage.scaleX();
+    const pointer = stage.getPointerPosition();
+    if (!pointer) return;
+
+    const mousePointTo: Vector2d = {
+      x: (pointer.x - stage.x()) / oldScale,
+      y: (pointer.y - stage.y()) / oldScale,
+    };
+
+    const newScale = e.evt.deltaY > 0 ? oldScale / scaleBy : oldScale * scaleBy;
+
+    const newPosition: Vector2d = {
+      x: pointer.x - mousePointTo.x * newScale,
+      y: pointer.y - mousePointTo.y * newScale,
+    };
+
+    setStageScale(newScale);
+    setStagePosition(newPosition);
+  };
+
+  const handleSelectElement = (elementId: string) => {
+    if (!userCursor) return;
+
+    const selectedElementId = userCursor.selected_element_id;
+    if (selectedElementId === elementId) return;
+
+    sendUpdateUserCursorMessage({
+      ...userCursor,
+      selected_element_id: elementId,
+    });
   };
 
   const handleDeselect = (target: Shape<ShapeConfig> | Konva.Stage) => {
+    if (!userCursor) return;
+
     const hasClickedOutside = target === target.getStage();
-    if (hasClickedOutside) setSelectedElementId(null);
+    if (!hasClickedOutside) return;
+
+    sendUpdateUserCursorMessage({
+      ...userCursor,
+      selected_element_id: null,
+    });
   };
 
   const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
@@ -71,42 +121,7 @@ const CanvasPage: FC<IProps> = () => {
     sendUpdateElementMessage(element.id, element);
   };
 
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (tokenData) {
-        sendMoveCursorMessage({
-          user_id: tokenData.user_id,
-          username: tokenData.username,
-          x: e.clientX,
-          y: e.clientY,
-        });
-      }
-    },
-    [tokenData, sendMoveCursorMessage],
-  );
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === Keyboard.Backspace && selectedElementId) {
-        sendDeleteElementMessage(selectedElementId);
-        setSelectedElementId(null);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [sendDeleteElementMessage, selectedElementId]);
-
-  useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [handleMouseMove]);
+  // TODO: handle onDragMove, onDragEnd
 
   // NOTE: fetch design elements data for the first time
   useEffect(() => {
@@ -117,25 +132,28 @@ const CanvasPage: FC<IProps> = () => {
 
   return (
     <Box>
-      <Typography>{`Number of users joined: ${users.length}`}</Typography>
-      <Typography>{`WebSocket connection status: ${getConnectionStatus(
-        readyState,
-      )}`}</Typography>
-      <Typography>{JSON.stringify(userCursors)}</Typography>
+      <ElementInspectDrawer onSelectElement={handleSelectElement} />
+      <PropertiesDrawer selectedElementId={selectedElementId} />
       <Stage
+        draggable
+        ref={stageRef}
+        scaleX={stageScale}
+        scaleY={stageScale}
+        x={stagePosition.x}
+        y={stagePosition.y}
         width={window.innerWidth}
         height={window.innerHeight}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
+        onWheel={handleWheel}
       >
-        <Layer>
-          <Text text="Click on the rectangle" />
-          {elements.map((element) => (
+        <Layer ref={layerRef}>
+          {sortedElements.map((element) => (
             <Element
               key={element.id}
-              isSelected={element.id === selectedElementId}
+              isSelected={selectedElementId === element.id}
               element={element}
-              onSelect={handleSelect}
+              onSelect={handleSelectElement}
               onChange={handleChange}
             />
           ))}
@@ -143,70 +161,19 @@ const CanvasPage: FC<IProps> = () => {
       </Stage>
       <DesignToolbar />
       {otherUserCursors.length > 0 && (
-        <UserCurors userCursors={otherUserCursors} />
+        <UserCursors userCursors={otherUserCursors} />
       )}
     </Box>
   );
 };
 
-const UserCurors: FC<{ userCursors: IUserCursor[] }> = ({ userCursors }) => {
+const UserCursors: FC<{ userCursors: IUserCursor[] }> = ({ userCursors }) => {
   return (
     <>
       {userCursors.map((userCursor) => (
         <UserCursor key={userCursor.user_id} userCursor={userCursor} />
       ))}
     </>
-  );
-};
-
-const UserCursor: FC<{ userCursor: IUserCursor }> = ({ userCursor }) => {
-  const { x, y, user_id, username } = userCursor;
-
-  const color = uuidToHashedColor(user_id);
-  return (
-    <Box
-      style={{
-        position: 'absolute',
-        left: x,
-        top: y,
-        transform: 'translate(-2px, -2px)',
-        pointerEvents: 'none',
-        zIndex: 1000,
-      }}
-    >
-      {/* Cursor triangle (looks like a system pointer) */}
-      <svg
-        width="16"
-        height="24"
-        viewBox="0 0 16 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        style={{ display: 'block' }}
-      >
-        <path d="M0 0L16 8L9 14L11 24L6 21L5 14L0 0Z" fill={color} />
-      </svg>
-
-      {/* Optional name/label */}
-      {username && (
-        <Box
-          style={{
-            position: 'absolute',
-            top: 24,
-            left: 0,
-            backgroundColor: 'white',
-            color,
-            fontSize: '12px',
-            padding: '2px 4px',
-            borderRadius: 4,
-            border: `1px solid ${color}`,
-            whiteSpace: 'nowrap',
-            transform: 'translateX(-20%)',
-          }}
-        >
-          {username}
-        </Box>
-      )}
-    </Box>
   );
 };
 

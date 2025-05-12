@@ -7,7 +7,20 @@ const theme = createTheme({
   palette: AppColor,
   cssVariables: true,
   typography: {
-    fontFamily: 'var(--font-roboto)',
+    htmlFontSize: 16,
+    fontSize: 14,
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
   },
   components: {
     MuiTypography: {

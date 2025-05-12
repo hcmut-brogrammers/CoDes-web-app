@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 
-import DeleteOrganizationButton from '@/components/DeleteOrganizationButton';
 import Column from '@/components/ui/Column';
 import UpdateOrganizationForm from '@/components/UpdateOrganizationForm';
 import { useCreateStyles } from '@/hooks/use-app-style';
@@ -12,7 +11,6 @@ const OrganizationInfoPage = () => {
   const styles = useCreateStyles(createStyles);
   const { data: organizationData, isFetched: isOrganizationDataFetched } =
     useFetchOrganization();
-  const canDelete = !organizationData?.is_default;
 
   return (
     <>
@@ -22,9 +20,6 @@ const OrganizationInfoPage = () => {
         ) : (
           <Column sx={styles.container}>
             <UpdateOrganizationForm organization={organizationData} />
-            {canDelete && (
-              <DeleteOrganizationButton organization={organizationData} />
-            )}
           </Column>
         )}
       </Box>

@@ -1,13 +1,21 @@
-import { WebSocketEvent } from '@/constants/enum';
+import { CursorStatus, WebSocketEvent } from '@/constants/enum';
 
 import { DesignElement } from './design-element';
 import { UserRole } from './user';
 
-export interface IUserCursor {
-  user_id: string;
-  username: string;
+interface ICursorPosition {
   x: number;
   y: number;
+}
+
+export interface IUserCursor {
+  id: string;
+  user_id: string;
+  email: string;
+  username: string;
+  position: ICursorPosition;
+  selected_element_id: Nullable<string>;
+  status: CursorStatus;
 }
 
 export interface ISender {
@@ -51,12 +59,15 @@ export interface IUpdateElementMessage
     { element_id: string; element: DesignElement }
   > {}
 
-export interface IJoinProjectMessage
-  extends IWebSocketMessage<WebSocketEvent.JoinProject, { user_id: string }> {}
-
-export interface IMoveCursorMessage
+export interface IJoinUserCursorMessage
   extends IWebSocketMessage<
-    WebSocketEvent.MoveCursor,
+    WebSocketEvent.JoinUserCursor,
+    { user_id: string }
+  > {}
+
+export interface IUpdateUserCursorMessage
+  extends IWebSocketMessage<
+    WebSocketEvent.UpdateUserCursor,
     { user_cursor: IUserCursor }
   > {}
 
@@ -72,12 +83,6 @@ export interface IElementDeletedMessage
   extends IWebSocketMessage<
     WebSocketEvent.ElementDeleted,
     { deleted_element_id: string }
-  > {}
-
-export interface IElementUpdatedMessage
-  extends IWebSocketMessage<
-    WebSocketEvent.ElementUpdated,
-    { updated_element_id: string; updated_element: DesignElement }
   > {}
 
 export interface ICurrentUsersMessage
@@ -117,22 +122,22 @@ export interface IReceiveElementUpdatedMessage
     } & IReceiverMessage
   > {}
 
-export interface IReceiveUserJoinedProjectMessage
+export interface IReceiveUserCursorJoinedMessage
   extends IWebSocketMessage<
-    WebSocketEvent.ReceiveUserJoinedProject,
+    WebSocketEvent.ReceiveUserCursorJoined,
     IReceiverMessage
   > {}
 
-export interface IReceiveUserLeftProjectMessage
+export interface IReceiveUserCursorLeftMessage
   extends IWebSocketMessage<
-    WebSocketEvent.ReceiveUserLeftProject,
+    WebSocketEvent.ReceiveUserCursorLeft,
     IReceiverMessage
   > {}
 
-export interface IReceiveUserCursorMovedMessage
+export interface IReceiveUserCursorUpdatedMessage
   extends IWebSocketMessage<
-    WebSocketEvent.ReceiveUserCursorMoved,
+    WebSocketEvent.ReceiveUserCursorUpdated,
     {
-      sender_cursor: IUserCursor;
+      user_cursor: IUserCursor;
     } & IReceiverMessage
   > {}

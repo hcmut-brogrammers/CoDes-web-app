@@ -10,16 +10,19 @@ import { useFormik } from 'formik';
 import { Labels } from '@/assets';
 import { useCreateStyles } from '@/hooks/use-app-style';
 import useUpdateOrganization from '@/hooks/use-update-organization';
+import useAuthStore from '@/stores/auth-store';
 import { IOrganization } from '@/types/organization';
 import { FunctionCreateStyles } from '@/types/style';
 import { UpdateOrganizationFormSchema } from '@/utils/schemas';
 
 import Row from './ui/Row';
+import DeleteOrganizationButton from './DeleteOrganizationButton';
 
 const UpdateOrganizationForm: FC<{ organization: IOrganization }> = ({
   organization,
 }) => {
   const styles = useCreateStyles(createStyles);
+  const { checkIfIsOrganizationAdmin } = useAuthStore();
   const { mutateAsync: updateOrganizationAsync } = useUpdateOrganization();
   const handleSubmit = async (values: IForm) => {
     await updateOrganizationAsync({
@@ -45,8 +48,13 @@ const UpdateOrganizationForm: FC<{ organization: IOrganization }> = ({
       formik.setTouched({ ...formik.touched, [key]: true });
     };
 
+  const isOrganizationAdmin = checkIfIsOrganizationAdmin();
+  const canDelete = isOrganizationAdmin && !organization.is_default;
   const canSubmit =
-    !Object.values(formik.errors).length && !formik.isSubmitting;
+    Object.values(formik.touched).length > 0 &&
+    JSON.stringify(formik.values) !== JSON.stringify(formik.initialValues) &&
+    !Object.values(formik.errors).length &&
+    !formik.isSubmitting;
 
   return (
     <Box component="form" onSubmit={formik.handleSubmit} sx={styles.container}>
@@ -70,6 +78,9 @@ const UpdateOrganizationForm: FC<{ organization: IOrganization }> = ({
           onChange={handleChangeField('avatarUrl')}
         />
         <Row justifyContent="space-between">
+          {canDelete && (
+            <DeleteOrganizationButton organization={organization} />
+          )}
           <Button
             type="submit"
             variant="contained"

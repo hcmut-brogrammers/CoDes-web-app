@@ -13,6 +13,8 @@ import useSwitchOrganization from '@/hooks/use-switch-organization';
 import useGlobalStore from '@/stores/global-store';
 import { IOrganization } from '@/types/organization';
 
+import ActionButton from './ActionButton';
+
 interface IProps {
   organization: IOrganization;
 }
@@ -61,9 +63,10 @@ const DeleteOrganizationModal: FC<
       open={open}
       onClose={onClose}
     >
-      <Column>
+      <Column gap={2}>
         <Typography>{`Type "${organization.name}" to confirm deleting the organization:`}</Typography>
         <TextField
+          fullWidth
           type="text"
           variant="outlined"
           label={Labels.InputFields.OrganizationName}
@@ -74,14 +77,15 @@ const DeleteOrganizationModal: FC<
             })
           }
         ></TextField>
-        <Button
+        <ActionButton
           variant="contained"
           loading={formik.isSubmitting}
           disabled={!canSubmit}
           onClick={() => formik.handleSubmit()}
+          sx={{ alignSelf: 'flex-end' }}
         >
           {Labels.Actions.Confirm}
-        </Button>
+        </ActionButton>
       </Column>
     </Modal>
   );
