@@ -1,8 +1,10 @@
 import { FC, ReactNode, useCallback, useEffect, useMemo } from 'react';
 import useWebSocket from 'react-use-websocket';
+import { useDebounceCallback } from 'usehooks-ts';
 
 import { Labels } from '@/assets';
 import { appEnv } from '@/constants/app-env';
+import { CursorStatus } from '@/constants/enum';
 import DesignProjectWebSocketContext from '@/contexts/design-project-web-socket-context';
 import useAuthStore from '@/stores/auth-store';
 import useDesignProjectStore from '@/stores/design-project-store';
@@ -12,51 +14,49 @@ import {
   ICurrentUsersMessage,
   IElementCreatedMessage,
   IElementDeletedMessage,
-  IElementUpdatedMessage,
   IReceiveElementCreatedMessage,
   IReceiveElementDeletedMessage,
   IReceiveElementUpdatedMessage,
-  IReceiveUserCursorMovedMessage,
-  IReceiveUserJoinedProjectMessage,
-  IReceiveUserLeftProjectMessage,
+  IReceiveUserCursorJoinedMessage,
+  IReceiveUserCursorLeftMessage,
+  IReceiveUserCursorUpdatedMessage,
   ISender,
+  IUpdateElementMessage,
+  IUpdateUserCursorMessage,
   IUserCursor,
 } from '@/types/websocket';
+import { getCurrentDateTime } from '@/utils/common';
 import {
   createCreateElementMessage,
   createDeleteElementMessage,
-  createJoinProjectMessage,
-  createMoveCursorMessage,
+  createJoinUserCursorMessage,
   createUpdateElementMessage,
+  createUpdateUserCursorMessage,
   isCurrentUsersMessage,
   isElementCreatedMessage,
   isElementDeletedMessage,
-  isElementUpdatedMessage,
   isReceiveElementCreatedMessage,
   isReceiveElementDeletedMessage,
   isReceiveElementUpdatedMessage,
-  isReceiveUserCursorMovedMessage,
-  isReceiveUserJoinedProjectMessage,
-  isReceiveUserLeftProjectMessage,
+  isReceiveUserCursorJoinedMessage,
+  isReceiveUserCursorLeftMessage,
+  isReceiveUserCursorUpdatedMessage,
 } from '@/utils/websocket';
 
 interface IProps {
   children: ReactNode;
 }
 
+const DEBOUNCE_DELAY_IN_MS = 200;
 const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
   const {
-    setUsers,
     updateElement,
     addElement,
     removeElement,
     setIsConnectedToWebSocket,
-    addUsers,
-    addUser,
     addUserCursor,
     updateUserCursor,
     addUserCursors,
-    removeUser,
     removeUserCursor,
   } = useDesignProjectStore();
   const { tokenData, checkIfIsAuthenticated } = useAuthStore();
@@ -84,7 +84,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
         setIsConnectedToWebSocket(true);
 
         if (tokenData) {
-          sendJoinProjectMessage({
+          sendJoinUserCursorMessage({
             id: tokenData.user_id,
             username: tokenData.username,
             email: tokenData.email,
@@ -103,6 +103,20 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
     shouldConnect,
   );
   const webSocket = getWebSocket();
+
+  const debouncedSendUpdateElementJsonMessage = useDebounceCallback(
+    (message: IUpdateElementMessage) => {
+      sendJsonMessage(message);
+    },
+    DEBOUNCE_DELAY_IN_MS,
+  );
+
+  const debouncedSendUpdateUserCursorJsonMessage = useDebounceCallback(
+    (message: IUpdateUserCursorMessage) => {
+      sendJsonMessage(message);
+    },
+    DEBOUNCE_DELAY_IN_MS,
+  );
 
   // NOTE: sender message response handlers
   const handleElementCreatedMessage = useCallback(
@@ -130,28 +144,24 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
     [removeElement],
   );
 
-  const handleElementUpdatedMessage = useCallback(
-    (message: IElementUpdatedMessage) => {
-      const { updated_element_id, updated_element } = message.payload;
-      updateElement(updated_element_id, () => updated_element);
-    },
-    [updateElement],
-  );
-
   const handleCurrentUsersMessage = useCallback(
     (message: ICurrentUsersMessage) => {
       const { users } = message.payload;
-      addUsers(users);
-
       const userCursors: IUserCursor[] = users.map((user) => ({
+        id: user.id,
         user_id: user.id,
         username: user.username,
-        x: 0,
-        y: 0,
+        email: user.email,
+        selected_element_id: null,
+        status: CursorStatus.Online,
+        position: {
+          x: 0,
+          y: 0,
+        },
       }));
       addUserCursors(userCursors);
     },
-    [addUsers, addUserCursors],
+    [addUserCursors],
   );
 
   // NOTE: receiver message response handlers
@@ -180,32 +190,36 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
     [updateElement],
   );
 
-  const handleReceiveUserJoinedProjectMessage = useCallback(
-    (message: IReceiveUserJoinedProjectMessage) => {
+  const handleReceiveUserCursorJoinedMessage = useCallback(
+    (message: IReceiveUserCursorJoinedMessage) => {
       const { sender } = message.payload;
-      addUser(sender);
       addUserCursor({
+        id: sender.id,
         user_id: sender.id,
         username: sender.username,
-        x: 0,
-        y: 0,
+        email: sender.email,
+        selected_element_id: null,
+        status: CursorStatus.Online,
+        position: {
+          x: 0,
+          y: 0,
+        },
       });
     },
-    [addUser, addUserCursor],
+    [addUserCursor],
   );
 
-  const handleReceiveUserLeftProjectMessage = useCallback(
-    (message: IReceiveUserLeftProjectMessage) => {
+  const handleReceiveUserCursorLeftMessage = useCallback(
+    (message: IReceiveUserCursorLeftMessage) => {
       const { sender } = message.payload;
-      removeUser(sender.id);
       removeUserCursor(sender.id);
     },
-    [removeUser, removeUserCursor],
+    [removeUserCursor],
   );
 
-  const handleReceiveUserCursorMovedMessage = useCallback(
-    (message: IReceiveUserCursorMovedMessage) => {
-      const { sender_cursor } = message.payload;
+  const handleReceiveUserCursorUpdatedMessage = useCallback(
+    (message: IReceiveUserCursorUpdatedMessage) => {
+      const { user_cursor: sender_cursor } = message.payload;
       updateUserCursor(sender_cursor.user_id, () => sender_cursor);
     },
     [updateUserCursor],
@@ -221,11 +235,6 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
       // NOTE: handle element deleted by current user message
       if (isElementDeletedMessage(lastJsonMessage)) {
         handleElementDeletedMessage(lastJsonMessage);
-      }
-
-      // NOTE: handle element updated by current user message
-      if (isElementUpdatedMessage(lastJsonMessage)) {
-        handleElementUpdatedMessage(lastJsonMessage);
       }
 
       if (isCurrentUsersMessage(lastJsonMessage)) {
@@ -247,48 +256,52 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
         handleReceiveElementUpdatedMessage(lastJsonMessage);
       }
 
-      if (isReceiveUserJoinedProjectMessage(lastJsonMessage)) {
-        handleReceiveUserJoinedProjectMessage(lastJsonMessage);
+      if (isReceiveUserCursorJoinedMessage(lastJsonMessage)) {
+        handleReceiveUserCursorJoinedMessage(lastJsonMessage);
       }
 
-      if (isReceiveUserCursorMovedMessage(lastJsonMessage)) {
-        handleReceiveUserCursorMovedMessage(lastJsonMessage);
+      if (isReceiveUserCursorUpdatedMessage(lastJsonMessage)) {
+        handleReceiveUserCursorUpdatedMessage(lastJsonMessage);
       }
 
-      if (isReceiveUserLeftProjectMessage(lastJsonMessage)) {
-        handleReceiveUserLeftProjectMessage(lastJsonMessage);
+      if (isReceiveUserCursorLeftMessage(lastJsonMessage)) {
+        handleReceiveUserCursorLeftMessage(lastJsonMessage);
       }
     }
   }, [
     lastJsonMessage,
     handleElementCreatedMessage,
     handleElementDeletedMessage,
-    handleElementUpdatedMessage,
     handleCurrentUsersMessage,
     handleReceiveElementCreatedMessage,
     handleReceiveElementDeletedMessage,
     handleReceiveElementUpdatedMessage,
-    handleReceiveUserJoinedProjectMessage,
-    handleReceiveUserCursorMovedMessage,
-    handleReceiveUserLeftProjectMessage,
+    handleReceiveUserCursorJoinedMessage,
+    handleReceiveUserCursorUpdatedMessage,
+    handleReceiveUserCursorLeftMessage,
   ]);
 
   // NOTE: sender messsage requests
-  const sendJoinProjectMessage = useCallback(
+  const sendJoinUserCursorMessage = useCallback(
     (user: ISender) => {
-      const message = createJoinProjectMessage({
+      const message = createJoinUserCursorMessage({
         user_id: user.id,
       });
       sendJsonMessage(message);
-      setUsers([user]);
       addUserCursor({
+        id: user.id,
         user_id: user.id,
         username: user.username,
-        x: 0,
-        y: 0,
+        email: user.email,
+        selected_element_id: null,
+        status: CursorStatus.Online,
+        position: {
+          x: 0,
+          y: 0,
+        },
       });
     },
-    [sendJsonMessage, setUsers, addUserCursor],
+    [sendJsonMessage, addUserCursor],
   );
 
   const sendCreateElementMessage = useCallback(
@@ -305,14 +318,18 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
 
   const sendUpdateElementMessage = useCallback(
     (elementId: string, element: DesignElement) => {
+      const updatedElement: DesignElement = {
+        ...element,
+        updated_at: getCurrentDateTime(),
+      };
       const message = createUpdateElementMessage({
         element_id: elementId,
-        element,
+        element: updatedElement,
       });
-      sendJsonMessage(message);
-      updateElement(elementId, () => element);
+      debouncedSendUpdateElementJsonMessage(message);
+      updateElement(elementId, () => updatedElement);
     },
-    [sendJsonMessage, updateElement],
+    [updateElement],
   );
 
   const sendDeleteElementMessage = useCallback(
@@ -325,15 +342,15 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
     [sendJsonMessage],
   );
 
-  const sendMoveCursorMessage = useCallback(
+  const sendUpdateUserCursorMessage = useCallback(
     (userCursor: IUserCursor) => {
-      const message = createMoveCursorMessage({
+      const message = createUpdateUserCursorMessage({
         user_cursor: userCursor,
       });
-      sendJsonMessage(message);
       updateUserCursor(userCursor.user_id, () => userCursor);
+      debouncedSendUpdateUserCursorJsonMessage(message);
     },
-    [sendJsonMessage, updateUserCursor],
+    [updateUserCursor],
   );
 
   const value = useMemo(
@@ -348,7 +365,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
       sendCreateElementMessage,
       sendDeleteElementMessage,
       sendUpdateElementMessage,
-      sendMoveCursorMessage,
+      sendUpdateUserCursorMessage,
     }),
     [
       webSocket,
@@ -361,7 +378,7 @@ const DesignProjectWebSocketProvider: FC<IProps> = ({ children }) => {
       sendCreateElementMessage,
       sendDeleteElementMessage,
       sendUpdateElementMessage,
-      sendMoveCursorMessage,
+      sendUpdateUserCursorMessage,
     ],
   );
 

@@ -1,9 +1,10 @@
 import { FC } from 'react';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 
 import SignUpForm from '@/components/SignUpForm';
+import CodesLogo from '@/components/ui/CodesLogo';
 import Column from '@/components/ui/Column';
+import ComputerHeroBanner from '@/components/ui/ComputerHeroBanner';
 import Row from '@/components/ui/Row';
 import { useCreateStyles } from '@/hooks/use-app-style';
 import { FunctionCreateStyles } from '@/types/style';
@@ -13,9 +14,10 @@ const SignUpPage: FC = () => {
   return (
     <Row sx={styles.page}>
       <Box sx={styles.heroBanner}>
-        <Typography>Logo</Typography>
+        <ComputerHeroBanner />
       </Box>
-      <Column sx={styles.form}>
+      <Column gap={4} sx={styles.form}>
+        <CodesLogo width={100} />
         <SignUpForm />
       </Column>
     </Row>

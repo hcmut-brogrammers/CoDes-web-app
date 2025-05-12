@@ -34,9 +34,10 @@ import Row from '../ui/Row';
 import StyledListItemIcon from '../ui/StyledListItemIcon';
 import StyledMenu, { StyledMenuItem } from '../ui/StyledMenu';
 
-const DesignProject: FC<{ designProject: IDesignProject }> = ({
-  designProject,
-}) => {
+interface IProps {
+  designProject: IDesignProject;
+}
+const DesignProject: FC<IProps> = ({ designProject }) => {
   const {
     mutateAsync: deleteDesignProjectAsync,
     isPending: isDeletingDesignProject,
@@ -118,21 +119,22 @@ const MoreButton: FC<{
         onClose={handleCloseMenu}
         slotProps={{
           paper: {
-            sx: {
-              minWidth: 'fit-content',
-              maxWidth: 'fit-content',
-            },
+            sx: styles.menuPaper,
           },
+          list: { sx: styles.menuList },
         }}
       >
-        <StyledMenuItem onClick={handleOpenFile}>
+        <StyledMenuItem onClick={handleOpenFile} sx={styles.menuItem}>
           <StyledListItemIcon>
             <FileOpenRoundedIcon />
           </StyledListItemIcon>
           <ListItemText primary={Labels.Actions.OpenFile} />
         </StyledMenuItem>
         {isOrganizationAdmin && (
-          <StyledMenuItem onClick={handleDeleteDesignProject}>
+          <StyledMenuItem
+            onClick={handleDeleteDesignProject}
+            sx={styles.menuItem}
+          >
             <StyledListItemIcon>
               <DeleteRoundedIcon />
             </StyledListItemIcon>
@@ -182,6 +184,17 @@ const createStyles: FunctionCreateStyles = (theme) => {
     textContainer: { padding: '8px', borderTop: BorderStyle },
     text: {
       fontWeight: AppStylesVariable.fontWeight.bold,
+    },
+
+    menuPaper: {
+      minWidth: 'fit-content',
+      width: '200px',
+    },
+    menuList: {
+      padding: '8px 0px',
+    },
+    menuItem: {
+      borderRadius: '0px',
     },
   };
 };

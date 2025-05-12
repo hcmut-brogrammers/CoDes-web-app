@@ -1,4 +1,4 @@
-import { ChangeEvent, FC } from 'react';
+import { ChangeEvent, FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -17,6 +17,7 @@ import { SignInFormSchema } from '@/utils/schemas';
 
 import Column from './ui/Column';
 import EmailInput from './ui/EmailInput';
+import ErrorHelperText from './ui/ErrorHelperText';
 import PasswordInput from './ui/PasswordInput';
 import Row from './ui/Row';
 
@@ -24,11 +25,17 @@ const SignInForm: FC = () => {
   const navigate = useNavigate();
   const styles = useCreateStyles(createStyles);
   const { mutateAsync: signInAsync } = useSignIn();
+  const [error, setError] = useState('');
 
   const handleSubmit = async (values: ISignInForm) => {
-    await signInAsync(values);
-    formik.resetForm({ values: initializeSignInForm() });
-    navigate(AppRoute.Dashboard());
+    try {
+      setError('');
+      await signInAsync(values);
+      formik.resetForm({ values: initializeSignInForm() });
+      navigate(AppRoute.Dashboard());
+    } catch {
+      setError(Labels.Error.InvalidEmailOrPassword);
+    }
   };
   const formik = useFormik({
     initialValues: initializeSignInForm(),
@@ -76,6 +83,7 @@ const SignInForm: FC = () => {
             }}
           />
         </Column>
+        <ErrorHelperText error={error} />
         <Divider />
         <Button
           fullWidth

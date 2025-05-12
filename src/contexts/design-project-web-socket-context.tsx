@@ -27,7 +27,7 @@ const DesignProjectWebSocketContext = createContext<
       elementId: string,
       element: DesignElement,
     ) => void;
-    sendMoveCursorMessage: (userCursor: IUserCursor) => void;
+    sendUpdateUserCursorMessage: (userCursor: IUserCursor) => void;
   }
 >({
   webSocket: null,
@@ -40,7 +40,7 @@ const DesignProjectWebSocketContext = createContext<
   sendCreateElementMessage: () => {},
   sendDeleteElementMessage: () => {},
   sendUpdateElementMessage: () => {},
-  sendMoveCursorMessage: () => {},
+  sendUpdateUserCursorMessage: () => {},
 });
 
 export default DesignProjectWebSocketContext;

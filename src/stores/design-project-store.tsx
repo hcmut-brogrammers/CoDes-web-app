@@ -3,16 +3,21 @@ import { persist } from 'zustand/middleware';
 
 import { StoreName } from '@/constants/store';
 import { DesignElement } from '@/types/design-element';
-import { ISender, IUserCursor } from '@/types/websocket';
+import { IUserCursor } from '@/types/websocket';
+
+import useAuthStore from './auth-store';
 
 interface IStateData {
   elements: DesignElement[];
-  users: ISender[];
   userCursors: IUserCursor[];
   isConnectedToWebSocket: boolean;
 }
 
 interface IState extends IStateData {
+  getMyUserCursor: () => Nullable<IUserCursor>;
+  getMySelectedElementId: () => Nullable<string>;
+  getOtherSelectedElementIds: () => string[];
+  getOtherUserCursors: () => IUserCursor[];
   setElements: (elements: DesignElement[]) => void;
   addElement: (element: DesignElement) => void;
   updateElement: (
@@ -20,10 +25,6 @@ interface IState extends IStateData {
     updateFn: (element: DesignElement) => DesignElement,
   ) => void;
   removeElement: (elementId: string) => void;
-  setUsers: (users: ISender[]) => void;
-  addUsers: (users: ISender[]) => void;
-  addUser: (user: ISender) => void;
-  removeUser: (userId: string) => void;
   setUserCursors: (userCursors: IUserCursor[]) => void;
   addUserCursors: (userCursors: IUserCursor[]) => void;
   addUserCursor: (userCursor: IUserCursor) => void;
@@ -38,7 +39,6 @@ interface IState extends IStateData {
 
 const initializeDesignProjectStore = (): IStateData => ({
   elements: [],
-  users: [],
   userCursors: [],
   isConnectedToWebSocket: false,
 });
@@ -49,6 +49,55 @@ const useDesignProjectStore = create<IState>()(
   persist(
     (set, get) => ({
       ...defaultStateData,
+      getMyUserCursor: () => {
+        const { tokenData } = useAuthStore.getState();
+        if (!tokenData || !tokenData.user_id) return null;
+
+        const { userCursors } = get();
+        const targetUserCursor = userCursors.find(
+          (userCursor) => userCursor.user_id === tokenData.user_id,
+        );
+        if (!targetUserCursor) return null;
+
+        return targetUserCursor;
+      },
+      getMySelectedElementId: () => {
+        const { tokenData } = useAuthStore.getState();
+        if (!tokenData || !tokenData.user_id) return null;
+
+        const { userCursors } = get();
+        const targetUserCursor = userCursors.find(
+          (userCursor) => userCursor.user_id === tokenData.user_id,
+        );
+        if (!targetUserCursor) return null;
+
+        return targetUserCursor.selected_element_id;
+      },
+      getOtherSelectedElementIds: () => {
+        const { tokenData } = useAuthStore.getState();
+        if (!tokenData || !tokenData.user_id) return [];
+
+        const { userCursors } = get();
+        const otherUserCursors = userCursors.filter(
+          (userCursor) => userCursor.user_id !== tokenData.user_id,
+        );
+        const selectedElementIds = otherUserCursors
+          .map((userCursor) => userCursor.selected_element_id)
+          .filter(Boolean);
+
+        return selectedElementIds as string[];
+      },
+      getOtherUserCursors: () => {
+        const { tokenData } = useAuthStore.getState();
+        if (!tokenData || !tokenData.user_id) return [];
+
+        const { userCursors } = get();
+        const otherUserCursors = userCursors.filter(
+          (userCursor) => userCursor.user_id !== tokenData.user_id,
+        );
+
+        return otherUserCursors;
+      },
       setElements: (elements) => {
         set({ elements });
       },
@@ -69,28 +118,6 @@ const useDesignProjectStore = create<IState>()(
           (element) => element.id !== elementId,
         );
         set({ elements: updatedElements });
-      },
-      setUsers: (users) => {
-        set({ users });
-      },
-      addUsers: (users) => {
-        const { users: currentUsers } = get();
-        const newUsers = users.filter(
-          (user) => !currentUsers.some((u) => u.id === user.id),
-        );
-        set({ users: [...currentUsers, ...newUsers] });
-      },
-      addUser: (user) => {
-        const { users } = get();
-        const isUserAlreadyAdded = users.some((u) => u.id === user.id);
-        if (isUserAlreadyAdded) return;
-
-        set({ users: [...users, user] });
-      },
-      removeUser: (userId) => {
-        const { users } = get();
-        const updatedUsers = users.filter((user) => user.id !== userId);
-        set({ users: updatedUsers });
       },
       setUserCursors: (userCursors) => {
         set({ userCursors });
@@ -114,9 +141,15 @@ const useDesignProjectStore = create<IState>()(
       },
       updateUserCursor: (userId, updateFn) => {
         const { userCursors } = get();
-        const updatedUserCursors = userCursors.map((cursor) =>
-          cursor.user_id === userId ? updateFn(cursor) : cursor,
+        const targetUserCursorIndex = userCursors.findIndex(
+          (cursor) => cursor.user_id === userId,
         );
+        if (targetUserCursorIndex < 0) return;
+        userCursors[targetUserCursorIndex] = updateFn(
+          userCursors[targetUserCursorIndex],
+        );
+
+        const updatedUserCursors = [...userCursors];
         set({ userCursors: updatedUserCursors });
       },
       removeUserCursor: (userId) => {
@@ -135,9 +168,9 @@ const useDesignProjectStore = create<IState>()(
     }),
     {
       name: StoreName.DesignProjectStore,
-      partialize: ({ elements, users, isConnectedToWebSocket }) => ({
+      partialize: ({ elements, userCursors, isConnectedToWebSocket }) => ({
         elements,
-        users,
+        userCursors,
         isConnectedToWebSocket,
       }),
     },

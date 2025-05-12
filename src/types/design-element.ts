@@ -1,7 +1,14 @@
 import { NodeConfig } from 'konva/lib/Node';
 import { ShapeConfig } from 'konva/lib/Shape';
+import { ArrowConfig } from 'konva/lib/shapes/Arrow';
 import { CircleConfig } from 'konva/lib/shapes/Circle';
+import { EllipseConfig } from 'konva/lib/shapes/Ellipse';
+import { LineConfig } from 'konva/lib/shapes/Line';
 import { RectConfig } from 'konva/lib/shapes/Rect';
+import { RegularPolygonConfig } from 'konva/lib/shapes/RegularPolygon';
+import { RingConfig } from 'konva/lib/shapes/Ring';
+import { StarConfig } from 'konva/lib/shapes/Star';
+import { TextConfig } from 'konva/lib/shapes/Text';
 
 import { ShapeType } from '@/constants/enum';
 
@@ -32,7 +39,12 @@ export interface INode
       | 'globalCompositeOperation'
       | 'filters'
     >,
-    Required<Pick<NodeConfig, 'id'>> {}
+    Required<Pick<NodeConfig, 'id'>> {
+  created_at: string;
+  updated_at?: string;
+  deleted_at?: string;
+  is_deleted: boolean;
+}
 
 export interface IShape
   extends Pick<
@@ -94,12 +106,95 @@ export interface IShape
   shapeType: ShapeType;
 }
 
-export interface IRectangle extends Pick<RectConfig, 'cornerRadius'>, IShape {
+interface IPickedRectConfig extends Pick<RectConfig, 'cornerRadius'> {}
+export interface IRectangle extends IPickedRectConfig, IShape {
   shapeType: ShapeType.Rectangle;
 }
 
-export interface ICircle extends Pick<CircleConfig, 'radius'>, IShape {
+interface IPickedCircleConfig extends Pick<CircleConfig, 'radius'> {}
+export interface ICircle extends IPickedCircleConfig, IShape {
   shapeType: ShapeType.Circle;
 }
 
-export type DesignElement = IRectangle | ICircle;
+interface IPickedLineConfig
+  extends Pick<LineConfig, 'points' | 'tension' | 'closed' | 'bezier'> {}
+export interface ILine extends IPickedLineConfig, IShape {
+  shapeType: ShapeType.Line;
+}
+
+interface IPickedArrowConfig
+  extends Pick<
+    ArrowConfig,
+    | 'points'
+    | 'tension'
+    | 'closed'
+    | 'pointerLength'
+    | 'pointerWidth'
+    | 'pointerAtBeginning'
+    | 'pointerAtEnding'
+  > {}
+export interface IArrow
+  extends Omit<IPickedLineConfig, 'points'>,
+    IPickedArrowConfig,
+    IShape {
+  shapeType: ShapeType.Arrow;
+}
+
+interface IPickedEllipseConfig
+  extends Pick<EllipseConfig, 'radiusX' | 'radiusY'> {}
+export interface IEllipse extends IPickedEllipseConfig, IShape {
+  shapeType: ShapeType.Ellipse;
+}
+interface IPickedRegularPolygonConfig
+  extends Pick<RegularPolygonConfig, 'sides' | 'radius'> {}
+export interface IRegularPolygon extends IPickedRegularPolygonConfig, IShape {
+  shapeType: ShapeType.RegularPolygon;
+}
+
+interface IPickedRingConfig
+  extends Pick<RingConfig, 'innerRadius' | 'outerRadius'> {}
+
+export interface IRing extends IPickedRingConfig, IShape {
+  shapeType: ShapeType.Ring;
+}
+
+interface IPickedStarConfig
+  extends Pick<StarConfig, 'numPoints' | 'innerRadius' | 'outerRadius'> {}
+
+export interface IStar extends IPickedStarConfig, IShape {
+  shapeType: ShapeType.Star;
+}
+
+interface IPickedTextConfig
+  extends Pick<
+    TextConfig,
+    | 'direction'
+    | 'text'
+    | 'fontFamily'
+    | 'fontSize'
+    | 'fontStyle'
+    | 'fontVariant'
+    | 'textDecoration'
+    | 'align'
+    | 'verticalAlign'
+    | 'padding'
+    | 'lineHeight'
+    | 'letterSpacing'
+    | 'wrap'
+    | 'ellipsis'
+  > {}
+
+export interface IText extends IPickedTextConfig, IShape {
+  shapeType: ShapeType.Text;
+}
+
+export type DesignElement =
+  | IRegularPolygon
+  | IRing
+  | IStar
+  | IText
+  | ILine
+  | IArrow
+  | IEllipse
+  | IRectangle
+  | ICircle;

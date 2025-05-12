@@ -51,7 +51,8 @@
         "Uninvite": "Uninvite",
         "OpenFile": "Open File",
         "CreateOrganization": "Create Organization",
-        "CreateDesignProject": "Create Design Project"
+        "CreateDesignProject": "Create Design Project",
+        "BackToFiles": "Back to Files"
     },
     "FieldValidation": {
         "EmailRequired": "Email is required",
@@ -61,7 +62,8 @@
         "UsernameRequired": "Username is required",
         "OrganizationNameRequired": "Organization Name is required",
         "ApiUrlRequired": "API URL is required",
-        "WebSocketUrlRequired": "WebSocket URL is required"
+        "WebSocketUrlRequired": "WebSocket URL is required",
+        "PasswordMinLength": "Password must be at least 8 characters long"
     },
     "Console": {
         "Error": {
@@ -75,7 +77,9 @@
     "Error": {
         "Unauthorized": "Unauthorized",
         "HttpError": "HTTP error while sending request: %s",
-        "NetworkError": "Network error while sending request: %s"
+        "NetworkError": "Network error while sending request: %s",
+        "InvalidEmailOrPassword": "Invalid email or password",
+        "InvalidEmail": "Invalid email"
     },
     "Instruction": {
         "CreateFirstOrganization": "Let's create your very first organization, %s."
@@ -121,5 +125,39 @@
     "InvitationStatus": {
         "Accepted": "Accepted",
         "Rejected": "Rejected"
+    },
+    "PropertiesSidebar": {
+        "ActiveUsersSection": {
+            "Header": "Active Users"
+        },
+        "PropertiesSection": {
+            "Header": "Properties",
+            "Position": "Position",
+            "Dimensions": "Dimensions",
+            "Appearance": "Appearance",
+            "Fill": "Fill"
+        }
+    },
+    "ElementInspectSidebar": {
+        "ProjectSection": {
+            "Header": "Project"
+        },
+        "InspectElementSection": {
+            "Header": "Elements"
+        }
+    },
+    "EmptyState": {
+        "NoDesignProject": {
+            "Title": "No Design Project",
+            "Description": "You don't have any design projects yet. Create one to get started."
+        },
+        "NoMembers": {
+            "Title": "No Members",
+            "Description": "You don't have any members in your organization yet. Invite some to get started."
+        },
+        "NoInvitations": {
+            "Title": "No Invitations",
+            "Description": "You don't have any invitations yet. Invite some users to your organization."
+        }
     }
 }

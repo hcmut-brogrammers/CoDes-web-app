@@ -1,3 +1,5 @@
+import { ReadyState } from 'react-use-websocket';
+
 import { WebSocketEvent } from '@/constants/enum';
 import {
   IBroadcastMessage,
@@ -6,20 +8,27 @@ import {
   IDeleteElementMessage,
   IElementCreatedMessage,
   IElementDeletedMessage,
-  IElementUpdatedMessage,
-  IJoinProjectMessage,
-  IMoveCursorMessage,
+  IJoinUserCursorMessage,
   IPingMessage,
   IReceiveElementCreatedMessage,
   IReceiveElementDeletedMessage,
   IReceiveElementUpdatedMessage,
-  IReceiveUserCursorMovedMessage,
-  IReceiveUserJoinedProjectMessage,
-  IReceiveUserLeftProjectMessage,
+  IReceiveUserCursorJoinedMessage,
+  IReceiveUserCursorLeftMessage,
+  IReceiveUserCursorUpdatedMessage,
   IUpdateElementMessage,
+  IUpdateUserCursorMessage,
 } from '@/types/websocket';
 
 // NOTE: sender request messages
+
+export const connectionStatuses = {
+  [ReadyState.CONNECTING]: 'Connecting',
+  [ReadyState.OPEN]: 'Open',
+  [ReadyState.CLOSING]: 'Closing',
+  [ReadyState.CLOSED]: 'Closed',
+  [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+};
 
 export const createPingMessage = (
   payload: IPingMessage['payload'],
@@ -66,20 +75,20 @@ export const createUpdateElementMessage = (
   };
 };
 
-export const createJoinProjectMessage = (
-  payload: IJoinProjectMessage['payload'],
-): IJoinProjectMessage => {
+export const createJoinUserCursorMessage = (
+  payload: IJoinUserCursorMessage['payload'],
+): IJoinUserCursorMessage => {
   return {
-    event: WebSocketEvent.JoinProject,
+    event: WebSocketEvent.JoinUserCursor,
     payload,
   };
 };
 
-export const createMoveCursorMessage = (
-  payload: IMoveCursorMessage['payload'],
-): IMoveCursorMessage => {
+export const createUpdateUserCursorMessage = (
+  payload: IUpdateUserCursorMessage['payload'],
+): IUpdateUserCursorMessage => {
   return {
-    event: WebSocketEvent.MoveCursor,
+    event: WebSocketEvent.UpdateUserCursor,
     payload,
   };
 };
@@ -104,16 +113,6 @@ export const isElementDeletedMessage = (
     Boolean(message) &&
     typeof message === 'object' &&
     (message as { event: unknown }).event === WebSocketEvent.ElementDeleted
-  );
-};
-
-export const isElementUpdatedMessage = (
-  message: unknown,
-): message is IElementUpdatedMessage => {
-  return (
-    Boolean(message) &&
-    typeof message === 'object' &&
-    (message as { event: unknown }).event === WebSocketEvent.ElementUpdated
   );
 };
 
@@ -162,35 +161,35 @@ export const isReceiveElementUpdatedMessage = (
   );
 };
 
-export const isReceiveUserJoinedProjectMessage = (
+export const isReceiveUserCursorJoinedMessage = (
   message: unknown,
-): message is IReceiveUserJoinedProjectMessage => {
+): message is IReceiveUserCursorJoinedMessage => {
   return (
     Boolean(message) &&
     typeof message === 'object' &&
     (message as { event: unknown }).event ===
-      WebSocketEvent.ReceiveUserJoinedProject
+      WebSocketEvent.ReceiveUserCursorJoined
   );
 };
 
-export const isReceiveUserLeftProjectMessage = (
+export const isReceiveUserCursorLeftMessage = (
   message: unknown,
-): message is IReceiveUserLeftProjectMessage => {
+): message is IReceiveUserCursorLeftMessage => {
   return (
     Boolean(message) &&
     typeof message === 'object' &&
     (message as { event: unknown }).event ===
-      WebSocketEvent.ReceiveUserLeftProject
+      WebSocketEvent.ReceiveUserCursorLeft
   );
 };
 
-export const isReceiveUserCursorMovedMessage = (
+export const isReceiveUserCursorUpdatedMessage = (
   message: unknown,
-): message is IReceiveUserCursorMovedMessage => {
+): message is IReceiveUserCursorUpdatedMessage => {
   return (
     Boolean(message) &&
     typeof message === 'object' &&
     (message as { event: unknown }).event ===
-      WebSocketEvent.ReceiveUserCursorMoved
+      WebSocketEvent.ReceiveUserCursorUpdated
   );
 };
