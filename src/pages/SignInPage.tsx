@@ -34,8 +34,6 @@ const createStyles: FunctionCreateStyles = () => {
       height: '100%',
       flex: 1,
       display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
     },
     form: {
       flex: 1,
