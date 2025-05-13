@@ -24,7 +24,7 @@ const SignUpPage: FC = () => {
   );
 };
 
-const createStyles: FunctionCreateStyles = (theme) => {
+const createStyles: FunctionCreateStyles = () => {
   return {
     page: {
       height: '100%',
@@ -33,10 +33,7 @@ const createStyles: FunctionCreateStyles = (theme) => {
     heroBanner: {
       height: '100%',
       flex: 1,
-      backgroundColor: theme.palette.hover,
       display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
     },
     form: {
       flex: 1,
