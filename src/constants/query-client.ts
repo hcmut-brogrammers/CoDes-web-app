@@ -14,6 +14,7 @@ export enum MutationKey {
   MarkInvitationAsRead = 'MarkInvitationAsRead',
   MarkInvitationAsUnread = 'MarkInvitationAsUnread',
   CreateDesignProject = 'CreateDesignProject',
+  DuplicateDesignProject = 'DuplicateDesignProject',
 }
 
 export enum QueryKey {
