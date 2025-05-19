@@ -52,6 +52,7 @@
         "OpenFile": "Open File",
         "CreateOrganization": "Create Organization",
         "CreateDesignProject": "Create Design Project",
+        "DuplicateDesignProject": "Duplicate",
         "BackToFiles": "Back to Files"
     },
     "FieldValidation": {

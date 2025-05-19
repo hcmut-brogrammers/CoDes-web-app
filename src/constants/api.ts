@@ -17,6 +17,8 @@ export const ApiEndpoint = {
   TakeInvitationAction: () => `${ApiEndpoint.Invitations()}/action`,
   UninviteMember: () => `${ApiEndpoint.Organizations()}/uninvite-member`,
   DesignProjects: () => '/design-projects',
+  DuplicateDesignProject: (designProjectId: string) =>
+    `${ApiEndpoint.DesignProjects()}/${designProjectId}/duplicate`,
   DeleteDesignProject: (designProjectId: string) =>
     `${ApiEndpoint.DesignProjects()}/${designProjectId}`,
   DesignElements: (designProjectId: string) =>

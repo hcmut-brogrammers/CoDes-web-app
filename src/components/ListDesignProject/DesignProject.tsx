@@ -14,6 +14,7 @@ import {
   useCreateStyles,
 } from '@/hooks/use-app-style';
 import useDeleteDesignProject from '@/hooks/use-delete-design-project';
+import useDuplicateDesignProject from '@/hooks/use-duplicate-design-project';
 import useMenu from '@/hooks/use-menu';
 import useNavigateRoute from '@/hooks/use-navigate-route';
 import useAuthStore from '@/stores/auth-store';
@@ -27,6 +28,7 @@ import {
 
 import {
   DeleteRoundedIcon,
+  FileCopyRoundedIcon,
   FileOpenRoundedIcon,
   MoreHorizRoundedIcon,
 } from '../ui/Icons';
@@ -86,6 +88,8 @@ const MoreButton: FC<{
   designProjectId: string;
   onDelete: (designProjectId: string) => Promise<void>;
 }> = ({ designProjectId, onDelete }) => {
+  const { mutateAsync: duplicateDesignProjectAsync } =
+    useDuplicateDesignProject();
   const { navigateDesignProjectCanvas } = useNavigateRoute();
   const { checkIfIsOrganizationAdmin } = useAuthStore();
   const styles = useCreateStyles(createStyles);
@@ -100,12 +104,20 @@ const MoreButton: FC<{
   };
 
   const handleOpenFile = () => {
+    handleCloseMenu();
     navigateDesignProjectCanvas(designProjectId);
   };
 
   const handleDeleteDesignProject = async () => {
     handleCloseMenu();
     await onDelete(designProjectId);
+  };
+
+  const handleDuplicate = async () => {
+    handleCloseMenu();
+    await duplicateDesignProjectAsync({
+      design_project_id: designProjectId,
+    });
   };
 
   return (
@@ -129,6 +141,12 @@ const MoreButton: FC<{
             <FileOpenRoundedIcon />
           </StyledListItemIcon>
           <ListItemText primary={Labels.Actions.OpenFile} />
+        </StyledMenuItem>
+        <StyledMenuItem onClick={handleDuplicate} sx={styles.menuItem}>
+          <StyledListItemIcon>
+            <FileCopyRoundedIcon />
+          </StyledListItemIcon>
+          <ListItemText primary={Labels.Actions.DuplicateDesignProject} />
         </StyledMenuItem>
         {isOrganizationAdmin && (
           <StyledMenuItem
