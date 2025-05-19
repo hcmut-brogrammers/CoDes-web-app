@@ -17,6 +17,20 @@ export const createDesignProject = async (
   >(ApiEndpoint.DesignProjects(), params);
 };
 
+export interface IDuplicateDesignProjectParams {
+  design_project_id: string;
+}
+interface IDuplicateDesignProjectResponse {
+  duplicated_project: IDesignProject;
+}
+export const duplicateDesignProject = async (
+  params: IDuplicateDesignProjectParams,
+): Promise<IDuplicateDesignProjectResponse> => {
+  return await apiClient.post<IDuplicateDesignProjectResponse>(
+    ApiEndpoint.DuplicateDesignProject(params.design_project_id),
+  );
+};
+
 interface IFetchDesignProjectsResponse {
   projects: IDesignProject[];
 }

@@ -8,12 +8,14 @@ import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import ColorLensRoundedIcon from '@mui/icons-material/ColorLensRounded';
+import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import CropDinRoundedIcon from '@mui/icons-material/CropDinRounded';
 import DataSaverOffIcon from '@mui/icons-material/DataSaverOff';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 import ExpandLessRoundedIcon from '@mui/icons-material/ExpandLessRounded';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
+import FileCopyRoundedIcon from '@mui/icons-material/FileCopyRounded';
 import FileOpenRoundedIcon from '@mui/icons-material/FileOpenRounded';
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 import HorizontalRuleRoundedIcon from '@mui/icons-material/HorizontalRuleRounded';
@@ -45,12 +47,14 @@ export {
   ChevronRightRoundedIcon,
   CircleOutlinedIcon,
   ColorLensRoundedIcon,
+  ContentCopyRoundedIcon,
   CropDinRoundedIcon,
   DataSaverOffIcon,
   DeleteRoundedIcon,
   DesignServicesIcon,
   ExpandLessRoundedIcon,
   ExpandMoreRoundedIcon,
+  FileCopyRoundedIcon,
   FileOpenRoundedIcon,
   GroupRoundedIcon,
   HorizontalRuleRoundedIcon,
